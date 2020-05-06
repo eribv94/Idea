@@ -15,7 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".GlosarioActivity"></activity>
-        <activity android:name=".creation.CreateIndice" />
         <activity android:name=".creation.CreateGlosario" />
         <activity android:name=".creation.CreateScreenshotActivity" />
         <activity android:name=".creation.CreateBusquedaActivity" />
