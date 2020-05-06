@@ -19,6 +19,10 @@ public class IdeasActivity extends AppCompatActivity {
     ListView ideasListView;
     Spinner typeSpinner;
 
+    ArrayAdapter<String> ideasAdapter;
+    ArrayList<String> listTitlesForAdapter = new ArrayList<>();
+    ArrayList<String> listTitlesForSpinner = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +33,7 @@ public class IdeasActivity extends AppCompatActivity {
 
         final ArrayList<ArrayList<String>> ideasOptions = new ArrayList<>();
 
-        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
         Cursor c = Database.rawQuery("SELECT * FROM ideas", null);
 
         int titleIndex = c.getColumnIndex("title");
@@ -47,8 +51,9 @@ public class IdeasActivity extends AppCompatActivity {
             c.moveToNext();
         }
 
-        ArrayList<String> listTitlesForAdapter = new ArrayList<>();
-        ArrayList<String> listTitlesForSpinner = new ArrayList<>();
+        listTitlesForAdapter = new ArrayList<>();
+        listTitlesForSpinner = new ArrayList<>();
+        listTitlesForSpinner.add("Todo");
         listTitlesForSpinner.add("Ideas");
         listTitlesForSpinner.add("Actividades");
         listTitlesForSpinner.add("Invensiones");
@@ -59,11 +64,11 @@ public class IdeasActivity extends AppCompatActivity {
             listTitlesForAdapter.add(array.get(0));
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listTitlesForAdapter);
-        ideasListView.setAdapter(adapter);
+        ideasAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listTitlesForAdapter);
+        ideasListView.setAdapter(ideasAdapter);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listTitlesForSpinner);
-        typeSpinner.setAdapter(arrayAdapter);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listTitlesForSpinner);
+        typeSpinner.setAdapter(spinnerAdapter);
 
         ideasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -77,9 +82,16 @@ public class IdeasActivity extends AppCompatActivity {
         ideasListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), ideasOptions.get(position).get(2), Toast.LENGTH_SHORT).show();
-
                 //BORRAR IDEA/MENU DE QUE HACER CON IDEA (editar, eliminar)
+                try {
+                    Database.delete("ideas", "title = " + "\'" + ideasOptions.get(position).get(0) + "\'", null);
+                    listTitlesForAdapter.remove(position);
+
+                    ideasAdapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(), "Idea eliminada", Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 return true;
             }
         });

@@ -19,6 +19,14 @@ import java.util.ArrayList;
 
 public class CreateIdeaActivity extends AppCompatActivity {
 
+    /*
+    * TODO:
+    *  - Revisar base de datos que guarde correctamente
+    *  - Hacer lista de tipos en otra seccion? Mas facil de editar
+    *  - Que codigo no dependa de "hardcode" de lista
+    *  -
+    * */
+
     EditText titleEditText;
     Spinner typeSpinner;
     EditText ideaEditText;
