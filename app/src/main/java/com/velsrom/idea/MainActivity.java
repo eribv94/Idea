@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.velsrom.idea.creation.CreateBusquedaActivity;
+import com.velsrom.idea.creation.CreateGlosarioActivity;
 import com.velsrom.idea.creation.CreateIdeaActivity;
 import com.velsrom.idea.creation.CreateScreenshotActivity;
 
@@ -137,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
                 floatingAddMenu.collapse();
 
                 //Ir a actividad para glosario. (actividad con nav egador y que al picar un boton se haga screenshot del cuadro del navegador
-                //Intent intent = new Intent(MainActivity.this, IdeasActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, CreateGlosarioActivity.class);
+                startActivity(intent);
             }
         });
 
