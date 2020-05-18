@@ -45,14 +45,14 @@ public class CreateGlosarioActivity extends AppCompatActivity {
 
                 Cursor c = ideasDatabase.rawQuery("SELECT * FROM ideas", null);
 
-                int titleIndex = c.getColumnIndex("palabra");
-                int ideaIndex = c.getColumnIndex("definicion");
+                int palabraIndex = c.getColumnIndex("palabra");
+                int definicionIndex = c.getColumnIndex("definicion");
 
                 c.moveToFirst();
 
                 while (!c.isAfterLast()) {
-                    Log.i("palabra", c.getString(titleIndex));
-                    Log.i("definicion", c.getString(ideaIndex));
+                    Log.i("palabra", c.getString(palabraIndex));
+                    Log.i("definicion", c.getString(definicionIndex));
                     c.moveToNext();
                 }
 
