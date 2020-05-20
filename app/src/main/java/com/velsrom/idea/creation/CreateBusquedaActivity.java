@@ -33,18 +33,15 @@ import java.io.InputStream;
 
 public class CreateBusquedaActivity extends AppCompatActivity {
 
-    /*
-    * FIXME:
-    *  - BLOB de imagen, si inserta imagen correctamente?
-    *  -
-    * */
-
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     public static final int REQUEST_CODE_SELECT_IMAGE = 2;
 
     EditText titleEditText;
     TextView imageTextView;
     EditText descripcionEditText;
+
+    String path = "";
+    boolean fromSC = false;
 
     byte[] imgByte;
 
@@ -57,7 +54,19 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         imageTextView = findViewById(R.id.imageTextView);
         descripcionEditText = findViewById(R.id.descripcionEditText);
 
+        Intent getIntentFromSC = getIntent();
+        path = getIntentFromSC.getStringExtra("path");
+
+        if(!path.isEmpty()){
+            Log.i("Image loaded path: ", path);
+            imageTextView.setText("Image Loaded");
+            fromSC = true;
+        }
     }
+
+    //==============================================================================================
+    //==============================================================================================  Cargar imagen de memoria (editar)
+    //==============================================================================================
 
     public void loadImage(View view){
         if(ContextCompat.checkSelfPermission(
@@ -134,6 +143,8 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     }
 
     //==============================================================================================
+    //==============================================================================================
+    //==============================================================================================
 
     public void saveBusqueda(View view){
         if(!titleEditText.getText().toString().equals("") && !descripcionEditText.getText().toString().equals(""))
@@ -141,25 +152,25 @@ public class CreateBusquedaActivity extends AppCompatActivity {
             try {
                 SQLiteDatabase busquedasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
 
-                busquedasDatabase.execSQL("CREATE TABLE IF NOT EXISTS busquedas (title VARCHAR, image BLOB, descripcion VARCHAR)");
+                busquedasDatabase.execSQL("CREATE TABLE IF NOT EXISTS busquedas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
 
                 ContentValues cv = new ContentValues();
                 cv.put("title", titleEditText.getText().toString());
-                cv.put("image", imgByte);
+                cv.put("path", path);
                 cv.put("descripcion", descripcionEditText.getText().toString());
                 busquedasDatabase.insert("busquedas", null, cv);
 
                 Cursor c = busquedasDatabase.rawQuery("SELECT * FROM busquedas", null);
 
                 int titleIndex = c.getColumnIndex("title");
-                int imageIndex = c.getColumnIndex("image");
+                int pathIndex = c.getColumnIndex("path");
                 int descripcionIndex = c.getColumnIndex("descripcion");
 
                 c.moveToFirst();
 
                 while (!c.isAfterLast()) {
                     Log.i("title", c.getString(titleIndex));
-                    Log.i("image", c.getString(imageIndex));
+                    Log.i("path", c.getString(pathIndex));
                     Log.i("descripcion", c.getString(descripcionIndex));
                     c.moveToNext();
                 }
@@ -175,12 +186,14 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         }
     }
 
-    public void cancelBusqueda(View view){
+    public void cancelBusqueda(View view){ finish(); }
+}
+
 //        SQLiteDatabase busquedasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
 //        Cursor c = busquedasDatabase.rawQuery("SELECT * FROM busquedas", null);
 //
 //        int titleIndex = c.getColumnIndex("title");
-//        int imageIndex = c.getColumnIndex("image");
+//        int pathIndex = c.getColumnIndex("path");
 //        int descripcionIndex = c.getColumnIndex("descripcion");
 //
 //        c.moveToFirst();
@@ -191,7 +204,3 @@ public class CreateBusquedaActivity extends AppCompatActivity {
 //            Log.i("descripcion", c.getString(descripcionIndex));
 //            c.moveToNext();
 //        }
-
-        finish();
-    }
-}
