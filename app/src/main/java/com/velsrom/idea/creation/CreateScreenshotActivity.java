@@ -70,10 +70,6 @@ public class CreateScreenshotActivity extends AppCompatActivity {
 
     public void saveScreen(View view){
 
-//        SQLiteDatabase ideasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-//
-//        ideasDatabase.execSQL("CREATE TABLE IF NOT EXISTS screenshots (path VARCHAR)");
-
         webView.setDrawingCacheEnabled(true);
         webView.buildDrawingCache(true);
         Bitmap bitmap = Bitmap.createBitmap(webView.getDrawingCache());
@@ -97,31 +93,8 @@ public class CreateScreenshotActivity extends AppCompatActivity {
         }
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
-//        ContentValues cv = new ContentValues();
-//        cv.put("path", file.getPath());
-//        ideasDatabase.insert("screenshots", null, cv);
-
         Toast.makeText(getApplicationContext(), "Image Saved: " + file.getPath(), Toast.LENGTH_SHORT).show();
         Log.i("File path: ", file.getPath());
-
-//        Cursor c = ideasDatabase.rawQuery("SELECT * FROM screenshots", null);
-//
-//        int pathIndex = c.getColumnIndex("path");
-//
-//        c.moveToFirst();
-//
-//        while (!c.isAfterLast()) {
-//            Log.i("path: ", c.getString(pathIndex));
-//            c.moveToNext();
-//        }
-//
-//        try {
-//            outputStream.flush();
-//            outputStream.close();
-//
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
 
         Intent scToBusqueda = new Intent(getApplicationContext(), CreateBusquedaActivity.class);
         scToBusqueda.putExtra("path", file.getPath());
