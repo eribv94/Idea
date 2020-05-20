@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     *  - Crear activity para el anadir imagen, o bien, usar la actividad de aniadir idea/busqueda pero con una imagen ya precargada
     *  - Activifdad de anadir notas poner la opcion de aniadir imagen como 2da opcion para cargar SC
     *  - Para save SC, pasar de salvar pantalla a CreateBusquedaActivity con la imagen ya precargada
+    *  - Crear clase para uso de base de datos en lugar de repetir el mismo codigo de anadir y obtener info!!!!!!!!!!!!!!
     * */
 
     ArrayList<String> menuOptions;

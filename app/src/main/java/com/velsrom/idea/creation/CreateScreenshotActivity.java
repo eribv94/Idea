@@ -3,9 +3,11 @@ package com.velsrom.idea.creation;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
@@ -29,16 +31,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class CreateScreenshotActivity extends AppCompatActivity {
 
     /*
-    * FIXME:
-    *   - Ver por que no sube el SC bien
-    *   - Otra forma de agarrar imagenes para poder guardar en notas y ver como
+    * TODO:
+    *   - Despue del SC ir a anadir busqueda con imagen precargada. Mandar path de archivo al intent
+    *   - Otra forma de agarrar imagenes para poder guardar en busqueda
+    *   - Hacer copia de imagen o agarrar el path de la original?
     * */
 
     WebView webView;
+    OutputStream outputStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +51,7 @@ public class CreateScreenshotActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_screenshot);
 
         webView = findViewById(R.id.webView);
-        webView.getSettings().setJavaScriptEnabled(true);
+        //webView.getSettings().setJavaScriptEnabled(true);  //ver vulnerabilidad y si es necesaria
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl("http://www.google.com");
     }
@@ -56,31 +61,72 @@ public class CreateScreenshotActivity extends AppCompatActivity {
     //==============================================================================================
 
     public void imageFromGallery(View view){
-
+        //buscar imagen en memoria
     }
 
     //==============================================================================================
     //==============================================================================================
     //==============================================================================================
 
-    public void screenshotActivity(View view){
-        Bitmap bitmap = Bitmap.createBitmap(webView.getWidth(), webView.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        webView.draw(canvas);
-        //Save screenshot in internal storage
-        try {
-            // Use the compress method on the Bitmap object to write image to
-            // the OutputStream
-            FileOutputStream fos = getApplicationContext().openFileOutput("webviewScreenshot.png", Context.MODE_PRIVATE);
+    public void saveScreen(View view){
 
-            // Writing the bitmap to the output stream
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.close();
-            Log.i("IMAGE SAVED", "SUCCESS");
-        } catch (Exception e) {
-            Log.i("IMAGE SAVED", "ERROR");
-            Log.i("saveToInternalStorage()", e.getMessage());
+//        SQLiteDatabase ideasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+//
+//        ideasDatabase.execSQL("CREATE TABLE IF NOT EXISTS screenshots (path VARCHAR)");
+
+        webView.setDrawingCacheEnabled(true);
+        webView.buildDrawingCache(true);
+        Bitmap bitmap = Bitmap.createBitmap(webView.getDrawingCache());
+        webView.setDrawingCacheEnabled(false);
+
+        File dir = new File(getFilesDir() + "/Screenshots/");
+        if(!dir.isFile()){
+            boolean mkdir = dir.mkdir();
+            if(mkdir){
+                Log.i("File creation", "Success: " + mkdir);
+            }else{
+                Log.i("File creation", "Already created: " + dir);
+            }
         }
+        File file = new File(dir, System.currentTimeMillis() + ".jpg");
+        try {
+            outputStream = new FileOutputStream(file);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+//        ContentValues cv = new ContentValues();
+//        cv.put("path", file.getPath());
+//        ideasDatabase.insert("screenshots", null, cv);
+
+        Toast.makeText(getApplicationContext(), "Image Saved: " + file.getPath(), Toast.LENGTH_SHORT).show();
+        Log.i("File path: ", file.getPath());
+
+//        Cursor c = ideasDatabase.rawQuery("SELECT * FROM screenshots", null);
+//
+//        int pathIndex = c.getColumnIndex("path");
+//
+//        c.moveToFirst();
+//
+//        while (!c.isAfterLast()) {
+//            Log.i("path: ", c.getString(pathIndex));
+//            c.moveToNext();
+//        }
+//
+//        try {
+//            outputStream.flush();
+//            outputStream.close();
+//
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+
+        Intent scToBusqueda = new Intent(getApplicationContext(), CreateBusquedaActivity.class);
+        scToBusqueda.putExtra("path", file.getPath());
+        startActivity(scToBusqueda);
+
         finish();
     }
 
@@ -88,8 +134,6 @@ public class CreateScreenshotActivity extends AppCompatActivity {
         finish();
     }
 }
-
-
 
 // NOTAS =====
 
