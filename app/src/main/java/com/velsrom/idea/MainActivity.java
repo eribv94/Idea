@@ -3,6 +3,7 @@ package com.velsrom.idea;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,10 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     /*
     * TODO:
-    *  - Crear activity para el anadir imagen, o bien, usar la actividad de aniadir idea/busqueda pero con una imagen ya precargada
-    *  - Activifdad de anadir notas poner la opcion de aniadir imagen como 2da opcion para cargar SC
-    *  - Para save SC, pasar de salvar pantalla a CreateBusquedaActivity con la imagen ya precargada
-    *  - Crear clase para uso de base de datos en lugar de repetir el mismo codigo de anadir y obtener info!!!!!!!!!!!!!!
+    *   - Crear clase para uso de base de datos en lugar de repetir el mismo codigo de anadir y obtener info!!!!!!!!!!!!!!
+    *   - Crear activity para ver las busquedas (similar a la de ideas?)
     * */
 
     ArrayList<String> menuOptions;
@@ -44,6 +43,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //==========================================================================================
+        // Si es la primera vez que usa el app, no tendra las tablas de bases de datos. Ejecutar esto (posible cambio)
+        // poner booleano unico para ver si es la primera vez usando el app? O if con ese booleano para
+        // ejecute este codigo 1 vez y cree la base de datos (hacer metodo)
+        //==========================================================================================
+
+        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+
+        Database.execSQL("CREATE TABLE IF NOT EXISTS ideas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
+        Database.execSQL("CREATE TABLE IF NOT EXISTS busquedas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
+        Database.execSQL("CREATE TABLE IF NOT EXISTS glosario (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
+
+        //==========================================================================================
+        //==========================================================================================
+        //==========================================================================================
+
+        ListView menuListView = findViewById(R.id.menuListView);
+
         floatingAddMenu = findViewById(R.id.floatingMenu);
         floatingAddIdea = findViewById(R.id.action_idea);
         floatingAddBusqueda = findViewById(R.id.action_investigacion);
@@ -51,10 +68,7 @@ public class MainActivity extends AppCompatActivity {
         floatingAddGlosario = findViewById(R.id.action_glosario);
         floatingAddIndice = findViewById(R.id.action_indice);
 
-        ListView menuListView = findViewById(R.id.menuListView);
-
         menuOptions = new ArrayList<>();
-
         menuOptions.add("Ver ideas");
         menuOptions.add("Que buscar/aprender");
         menuOptions.add("Glosario");
@@ -62,35 +76,30 @@ public class MainActivity extends AppCompatActivity {
         menuOptions.add("Idea aleatoria (Proximamente)");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, menuOptions);
-
         menuListView.setAdapter(adapter);
 
         menuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), menuOptions.get(position), Toast.LENGTH_SHORT).show();
-
-                Intent intent;
+                Intent intent = null;
                 switch (position) {
                     case 0:
                         intent = new Intent(MainActivity.this, IdeasActivity.class);
-                        startActivity(intent);
                         break;
                     case 1:
-                        Log.i("CASE NUMBER", "1");
+                        intent = new Intent(MainActivity.this, BusquedasActivity.class);
                         break;
                     case 2:
-                        Log.i("CASE NUMBER", "2");
                         intent = new Intent(MainActivity.this, GlosarioActivity.class);
-                        startActivity(intent);
                         break;
                     case 3:
-                        Log.i("CASE NUMBER", "3");
+                        Toast.makeText(getApplicationContext(), "Clicked #3", Toast.LENGTH_SHORT).show();
                         break;
                     case 4:
-                        Log.i("CASE NUMBER", "4");
+                        Toast.makeText(getApplicationContext(), "Clicked #4", Toast.LENGTH_SHORT).show();
                         break;
                 }
+                startActivity(intent);
             }
         });
 
@@ -99,10 +108,8 @@ public class MainActivity extends AppCompatActivity {
         floatingAddIdea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "idea cliked", Toast.LENGTH_SHORT).show();
                 floatingAddMenu.collapse();
 
-                //Ir a actividad donde puedas apuntar una idea/pensamiento/sueno
                 Intent ideaIntent = new Intent(MainActivity.this, CreateIdeaActivity.class);
                 startActivity(ideaIntent);
             }
@@ -111,10 +118,8 @@ public class MainActivity extends AppCompatActivity {
         floatingAddBusqueda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "busqueda clicked", Toast.LENGTH_SHORT).show();
                 floatingAddMenu.collapse();
 
-                //Ir a actividad dodne aniades una nota/recordatorio/que hacer despues
                 Intent intent = new Intent(MainActivity.this, CreateBusquedaActivity.class);
                 startActivity(intent);
             }
@@ -123,10 +128,8 @@ public class MainActivity extends AppCompatActivity {
         floatingAddScreenshot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "sc clicked", Toast.LENGTH_SHORT).show();
                 floatingAddMenu.collapse();
 
-                //Ir a actividad para screenshot. (actividad con nav egador y que al picar un boton se haga screenshot del cuadro del navegador
                 Intent intent = new Intent(MainActivity.this, CreateScreenshotActivity.class);
                 startActivity(intent);
             }
@@ -135,10 +138,8 @@ public class MainActivity extends AppCompatActivity {
         floatingAddGlosario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "sc glosario", Toast.LENGTH_SHORT).show();
                 floatingAddMenu.collapse();
 
-                //Ir a actividad para glosario. (actividad con nav egador y que al picar un boton se haga screenshot del cuadro del navegador
                 Intent intent = new Intent(MainActivity.this, CreateGlosarioActivity.class);
                 startActivity(intent);
             }
@@ -147,12 +148,9 @@ public class MainActivity extends AppCompatActivity {
         floatingAddIndice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "sc indice", Toast.LENGTH_SHORT).show();
                 floatingAddMenu.collapse();
 
-                //Ir a actividad para indice. (actividad con nav egador y que al picar un boton se haga screenshot del cuadro del navegador
-                //Intent intent = new Intent(MainActivity.this, IdeasActivity.class);
-                //startActivity(intent);
+                //Intent AQUI!
             }
         });
     }

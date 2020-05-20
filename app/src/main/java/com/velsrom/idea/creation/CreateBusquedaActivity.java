@@ -33,12 +33,6 @@ import java.io.InputStream;
 
 public class CreateBusquedaActivity extends AppCompatActivity {
 
-    /*
-    * FIXME:
-    *  - BLOB de imagen, si inserta imagen correctamente?
-    *  -
-    * */
-
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     public static final int REQUEST_CODE_SELECT_IMAGE = 2;
 
@@ -69,6 +63,10 @@ public class CreateBusquedaActivity extends AppCompatActivity {
             fromSC = true;
         }
     }
+
+    //==============================================================================================
+    //==============================================================================================  Cargar imagen de memoria (editar)
+    //==============================================================================================
 
     public void loadImage(View view){
         if(ContextCompat.checkSelfPermission(
@@ -145,6 +143,8 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     }
 
     //==============================================================================================
+    //==============================================================================================
+    //==============================================================================================
 
     public void saveBusqueda(View view){
         if(!titleEditText.getText().toString().equals("") && !descripcionEditText.getText().toString().equals(""))
@@ -186,12 +186,14 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         }
     }
 
-    public void cancelBusqueda(View view){
+    public void cancelBusqueda(View view){ finish(); }
+}
+
 //        SQLiteDatabase busquedasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
 //        Cursor c = busquedasDatabase.rawQuery("SELECT * FROM busquedas", null);
 //
 //        int titleIndex = c.getColumnIndex("title");
-//        int imageIndex = c.getColumnIndex("image");
+//        int pathIndex = c.getColumnIndex("path");
 //        int descripcionIndex = c.getColumnIndex("descripcion");
 //
 //        c.moveToFirst();
@@ -202,7 +204,3 @@ public class CreateBusquedaActivity extends AppCompatActivity {
 //            Log.i("descripcion", c.getString(descripcionIndex));
 //            c.moveToNext();
 //        }
-
-        finish();
-    }
-}

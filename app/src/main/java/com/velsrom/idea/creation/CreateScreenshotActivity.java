@@ -37,7 +37,6 @@ public class CreateScreenshotActivity extends AppCompatActivity {
 
     /*
     * TODO:
-    *   - Despue del SC ir a anadir busqueda con imagen precargada. Mandar path de archivo al intent
     *   - Otra forma de agarrar imagenes para poder guardar en busqueda
     *   - Hacer copia de imagen o agarrar el path de la original?
     * */
