@@ -94,9 +94,11 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 3:
                         Toast.makeText(getApplicationContext(), "Clicked #3", Toast.LENGTH_SHORT).show();
+                        intent = new Intent(MainActivity.this, GlosarioActivity.class);  //No es su actividad
                         break;
                     case 4:
                         Toast.makeText(getApplicationContext(), "Clicked #4", Toast.LENGTH_SHORT).show();
+                        intent = new Intent(MainActivity.this, GlosarioActivity.class);  //No es su actividad
                         break;
                 }
                 startActivity(intent);

@@ -8,7 +8,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -24,12 +23,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.velsrom.idea.IdeaDataBase;
 import com.velsrom.idea.R;
 
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class CreateBusquedaActivity extends AppCompatActivity {
 
@@ -39,6 +40,8 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     EditText titleEditText;
     TextView imageTextView;
     EditText descripcionEditText;
+
+    IdeaDataBase busquedaDataBase;
 
     String path = "";
     boolean fromSC = false;
@@ -57,11 +60,20 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         Intent getIntentFromSC = getIntent();
         path = getIntentFromSC.getStringExtra("path");
 
-        if(!path.isEmpty()){
+        if(path != null && !path.isEmpty()){
             Log.i("Image loaded path: ", path);
             imageTextView.setText("Image Loaded");
             fromSC = true;
+        }else {
+            path="";
         }
+
+        SQLiteDatabase busquedasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+
+        String[] columns = {"title", "path", "descripcion"};
+        ArrayList<String> nameTypes= new ArrayList();
+
+        busquedaDataBase = new IdeaDataBase(busquedasDatabase, "busquedas", columns, nameTypes);
     }
 
     //==============================================================================================
@@ -150,32 +162,9 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         if(!titleEditText.getText().toString().equals("") && !descripcionEditText.getText().toString().equals(""))
         {
             try {
-                SQLiteDatabase busquedasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+                String[] dataForDatabase = {titleEditText.getText().toString(), path, descripcionEditText.getText().toString()};
+                busquedaDataBase.addData(dataForDatabase);
 
-                busquedasDatabase.execSQL("CREATE TABLE IF NOT EXISTS busquedas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
-
-                ContentValues cv = new ContentValues();
-                cv.put("title", titleEditText.getText().toString());
-                cv.put("path", path);
-                cv.put("descripcion", descripcionEditText.getText().toString());
-                busquedasDatabase.insert("busquedas", null, cv);
-
-                Cursor c = busquedasDatabase.rawQuery("SELECT * FROM busquedas", null);
-
-                int titleIndex = c.getColumnIndex("title");
-                int pathIndex = c.getColumnIndex("path");
-                int descripcionIndex = c.getColumnIndex("descripcion");
-
-                c.moveToFirst();
-
-                while (!c.isAfterLast()) {
-                    Log.i("title", c.getString(titleIndex));
-                    Log.i("path", c.getString(pathIndex));
-                    Log.i("descripcion", c.getString(descripcionIndex));
-                    c.moveToNext();
-                }
-
-                Toast.makeText(getApplicationContext(), "Busqueda saved", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -186,21 +175,8 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         }
     }
 
-    public void cancelBusqueda(View view){ finish(); }
+    public void cancelBusqueda(View view){
+        busquedaDataBase.getData();
+        finish();
+    }
 }
-
-//        SQLiteDatabase busquedasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-//        Cursor c = busquedasDatabase.rawQuery("SELECT * FROM busquedas", null);
-//
-//        int titleIndex = c.getColumnIndex("title");
-//        int pathIndex = c.getColumnIndex("path");
-//        int descripcionIndex = c.getColumnIndex("descripcion");
-//
-//        c.moveToFirst();
-//
-//        while (!c.isAfterLast()) {
-//            Log.i("title", c.getString(titleIndex));
-//            Log.i("image", c.getString(imageIndex));
-//            Log.i("descripcion", c.getString(descripcionIndex));
-//            c.moveToNext();
-//        }
