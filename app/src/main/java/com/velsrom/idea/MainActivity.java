@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         Database.execSQL("CREATE TABLE IF NOT EXISTS ideas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
         Database.execSQL("CREATE TABLE IF NOT EXISTS busquedas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
-        Database.execSQL("CREATE TABLE IF NOT EXISTS glosario (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
+        Database.execSQL("CREATE TABLE IF NOT EXISTS glosario (palabra VARCHAR, definicion VARCHAR)");
 
         //==========================================================================================
         //==========================================================================================

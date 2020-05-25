@@ -7,34 +7,41 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+/* FIXME:
+    - Ver si es necesario el "dataTypes", posiblemente quitarlo (todos son VARCHAR)
+* */
+
 public class IdeaDataBase {
-    SQLiteDatabase Database;
+    SQLiteDatabase database;
     String databaseName;
     String[] columnNames;
-    ArrayList<String> dataType;
+    ArrayList<String> dataTypes;
 
     public IdeaDataBase(SQLiteDatabase database, String databaseName, String[] columnNames, ArrayList<String> dataTypes) {
-        this.Database = database;
+        this.database = database;
         this.databaseName = databaseName;
         this.columnNames = columnNames;
-        this.dataType = dataTypes;
+        this.dataTypes = dataTypes;
     }
 
     public void addData(String[] array){
-
-        String query = "CREATE TABLE IF NOT EXISTS" + databaseName + "(title VARCHAR, path VARCHAR, descripcion VARCHAR)";
-        Database.execSQL(query);
+        StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + databaseName + " (");
+        for (int i = 0; i < columnNames.length; i++) {
+            query.append(" " + columnNames[i] + " VARCHAR,");
+        }
+        query.setCharAt(query.length() - 1, ')');
+        database.execSQL(query.toString());
 
         ContentValues cv = new ContentValues();
-        for (int i = 0; i < columnNames.length - 1; i++) {
+        for (int i = 0; i < columnNames.length; i++) {
             cv.put(columnNames[i], array[i]);
         }
-        Database.insert("busquedas", null, cv);
+        database.insert(databaseName, null, cv);
     }
 
     public void getData(){
         String query = "SELECT * FROM " + databaseName;
-        Cursor c = Database.rawQuery(query, null);
+        Cursor c = database.rawQuery(query, null);
 
         int[] idxs = new int[columnNames.length];
 
@@ -45,7 +52,7 @@ public class IdeaDataBase {
 
         while (!c.isAfterLast()) {
             for (int i = 0; i < idxs.length; i++){
-                Log.i(dataType.get(i), c.getString(idxs[i]));
+                Log.i(dataTypes.get(i), c.getString(idxs[i]));
             }
             c.moveToNext();
         }

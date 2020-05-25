@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.velsrom.idea.IdeaDataBase;
 import com.velsrom.idea.R;
 
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ public class CreateIdeaActivity extends AppCompatActivity {
     EditText titleEditText;
     Spinner typeSpinner;
     EditText ideaEditText;
+
+    IdeaDataBase ideasDataBase;
 
     ArrayList<String> ideaTypes;
 
@@ -50,6 +53,12 @@ public class CreateIdeaActivity extends AppCompatActivity {
         ideaTypes.add("Pensamientos");
         ideaTypes.add("Frases");
 
+        SQLiteDatabase database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+
+        String[] columns = {"title", "type", "idea"};
+        ArrayList<String> nameTypes= new ArrayList();
+
+        ideasDataBase = new IdeaDataBase(database, "ideas", columns, nameTypes);
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ideaTypes);
         typeSpinner.setAdapter(arrayAdapter);
@@ -62,30 +71,12 @@ public class CreateIdeaActivity extends AppCompatActivity {
                 !ideaEditText.getText().toString().equals(""))
         {
             try {
-                SQLiteDatabase ideasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-
-                ideasDatabase.execSQL("CREATE TABLE IF NOT EXISTS ideas (title VARCHAR, type VARCHAR, idea VARCHAR)");
-
-                ContentValues cv = new ContentValues();
-                cv.put("title", titleEditText.getText().toString());
-                cv.put("type", typeSpinner.getSelectedItem().toString());
-                cv.put("idea", ideaEditText.getText().toString());
-                ideasDatabase.insert("ideas", null, cv);
-
-                Cursor c = ideasDatabase.rawQuery("SELECT * FROM ideas", null);
-
-                int titleIndex = c.getColumnIndex("title");
-                int typeIndex = c.getColumnIndex("type");
-                int ideaIndex = c.getColumnIndex("idea");
-
-                c.moveToFirst();
-
-                while (!c.isAfterLast()) {
-                    Log.i("title", c.getString(titleIndex));
-                    Log.i("type", c.getString(typeIndex));
-                    Log.i("idea", c.getString(ideaIndex));
-                    c.moveToNext();
-                }
+                String[] dataForDatabase = {
+                        titleEditText.getText().toString(),
+                        typeSpinner.getSelectedItem().toString(),
+                        ideaEditText.getText().toString()};
+                ideasDataBase.addData(dataForDatabase);
+                ideasDataBase.getData();
 
                 Toast.makeText(getApplicationContext(), "Idea saved", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {

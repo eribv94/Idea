@@ -11,11 +11,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.velsrom.idea.IdeaDataBase;
 import com.velsrom.idea.R;
+
+import java.util.ArrayList;
 
 public class CreateGlosarioActivity extends AppCompatActivity {
 
     EditText wordEditText, descripcionEditText;
+
+    IdeaDataBase glosarioDataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,37 +29,26 @@ public class CreateGlosarioActivity extends AppCompatActivity {
 
         wordEditText = findViewById(R.id.wordEditText);
         descripcionEditText = findViewById(R.id.descripcionEditText);
+
+        SQLiteDatabase database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+
+        String[] columns = {"palabra", "definicion"};
+        ArrayList<String> nameTypes= new ArrayList();
+
+        glosarioDataBase = new IdeaDataBase(database, "glosario", columns, nameTypes);
     }
 
     public void saveWord(View view){
         String word = wordEditText.getText().toString();
+        String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1);
         String definicion = descripcionEditText.getText().toString();
 
         if(!word.equals("") && !definicion.equals(""))
         {
             try {
-                SQLiteDatabase ideasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-
-                ideasDatabase.execSQL("CREATE TABLE IF NOT EXISTS glosario (palabra VARCHAR, definicion VARCHAR)");
-
-                ContentValues cv = new ContentValues();
-                String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1);
-                cv.put("palabra", capitalizedWord);
-                cv.put("definicion", definicion);
-                ideasDatabase.insert("glosario", null, cv);
-
-                Cursor c = ideasDatabase.rawQuery("SELECT * FROM ideas", null);
-
-                int palabraIndex = c.getColumnIndex("palabra");
-                int definicionIndex = c.getColumnIndex("definicion");
-
-                c.moveToFirst();
-
-                while (!c.isAfterLast()) {
-                    Log.i("palabra", c.getString(palabraIndex));
-                    Log.i("definicion", c.getString(definicionIndex));
-                    c.moveToNext();
-                }
+                String[] dataForDatabase = {capitalizedWord, definicion};
+                glosarioDataBase.addData(dataForDatabase);
+                glosarioDataBase.getData();
 
                 Toast.makeText(getApplicationContext(), "Word saved", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {

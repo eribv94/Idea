@@ -68,12 +68,12 @@ public class CreateBusquedaActivity extends AppCompatActivity {
             path="";
         }
 
-        SQLiteDatabase busquedasDatabase = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        SQLiteDatabase databse = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
 
         String[] columns = {"title", "path", "descripcion"};
         ArrayList<String> nameTypes= new ArrayList();
 
-        busquedaDataBase = new IdeaDataBase(busquedasDatabase, "busquedas", columns, nameTypes);
+        busquedaDataBase = new IdeaDataBase(databse, "busquedas", columns, nameTypes);
     }
 
     //==============================================================================================
@@ -164,7 +164,6 @@ public class CreateBusquedaActivity extends AppCompatActivity {
             try {
                 String[] dataForDatabase = {titleEditText.getText().toString(), path, descripcionEditText.getText().toString()};
                 busquedaDataBase.addData(dataForDatabase);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
