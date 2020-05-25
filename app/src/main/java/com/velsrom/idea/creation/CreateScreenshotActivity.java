@@ -55,6 +55,15 @@ public class CreateScreenshotActivity extends AppCompatActivity {
         webView.loadUrl("http://www.google.com");
     }
 
+    @Override
+    public void onBackPressed() {
+        if(webView.canGoBack()){
+            webView.goBack();
+        }else {
+            super.onBackPressed();
+        }
+    }
+
     //==============================================================================================
     //==============================================================================================
     //==============================================================================================
