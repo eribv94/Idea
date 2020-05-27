@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".creation.CreateScreenshotActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:srcCompat="@drawable/backwithborder" />
+
     <WebView
         android:id="@+id/webView"
         android:layout_width="0dp"
@@ -18,7 +28,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" >
+
+    </WebView>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -28,7 +40,6 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="33dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/webView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

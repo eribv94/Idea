@@ -2,10 +2,14 @@ package com.velsrom.idea.creation;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -20,8 +24,10 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.velsrom.idea.MainActivity;
 import com.velsrom.idea.R;
 
 import org.apache.commons.io.FileUtils;
@@ -39,10 +45,16 @@ public class CreateScreenshotActivity extends AppCompatActivity {
     * TODO:
     *   - Otra forma de agarrar imagenes para poder guardar en busqueda
     *   - Hacer copia de imagen o agarrar el path de la original?
+    *   - Crear otra actividad para confirmar el grabar imagen seleccionada en lugar de utilizar esta misma (mas facil)
     * */
 
+    public static final int PICK_IMAGE = 1;
+    private static final int REQUEST_CODE_STORAGE_PERMISSION = 2;
+
     WebView webView;
+    ImageView imageView;
     OutputStream outputStream;
+    boolean isImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +62,7 @@ public class CreateScreenshotActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_screenshot);
 
         webView = findViewById(R.id.webView);
+        imageView = findViewById(R.id.imageView);
         //webView.getSettings().setJavaScriptEnabled(true);  //ver vulnerabilidad y si es necesaria
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl("http://www.google.com");
@@ -69,7 +82,19 @@ public class CreateScreenshotActivity extends AppCompatActivity {
     //==============================================================================================
 
     public void imageFromGallery(View view){
-        //buscar imagen en memoria
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == PICK_IMAGE) {
+            webView.setVisibility(View.GONE);
+            imageView.setImageURI(data.getData());
+            isImageView = true;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     //==============================================================================================
@@ -77,12 +102,25 @@ public class CreateScreenshotActivity extends AppCompatActivity {
     //==============================================================================================
 
     public void saveScreen(View view){
+        Bitmap bitmap;
+        if(isImageView){
+            imageView.setDrawingCacheEnabled(true);
+            imageView.buildDrawingCache(true);
+            bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
+            imageView.setDrawingCacheEnabled(false);
+        }else {
+            webView.setDrawingCacheEnabled(true);
+            webView.buildDrawingCache(true);
+            bitmap = Bitmap.createBitmap(webView.getDrawingCache());
+            webView.setDrawingCacheEnabled(false);
+        }
 
-        webView.setDrawingCacheEnabled(true);
-        webView.buildDrawingCache(true);
-        Bitmap bitmap = Bitmap.createBitmap(webView.getDrawingCache());
-        webView.setDrawingCacheEnabled(false);
+        saveScreenshot(bitmap);
 
+        finish();
+    }
+
+    private void saveScreenshot(Bitmap bitmap){
         File dir = new File(getFilesDir() + "/Screenshots/");
         if(!dir.isFile()){
             boolean mkdir = dir.mkdir();
@@ -107,8 +145,6 @@ public class CreateScreenshotActivity extends AppCompatActivity {
         Intent scToBusqueda = new Intent(getApplicationContext(), CreateBusquedaActivity.class);
         scToBusqueda.putExtra("path", file.getPath());
         startActivity(scToBusqueda);
-
-        finish();
     }
 
     public void cancelActivity(View view){

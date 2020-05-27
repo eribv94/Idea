@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -29,7 +30,9 @@ import com.velsrom.idea.R;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class CreateBusquedaActivity extends AppCompatActivity {
@@ -47,6 +50,9 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     boolean fromSC = false;
 
     byte[] imgByte;
+
+    OutputStream outputStream;
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +113,10 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     }
 
     private void selectImage(){
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK);
         if(intent.resolveActivity(getPackageManager()) != null){
-            startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
+            intent.setType("image/*");
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_SELECT_IMAGE);
         }
     }
 
@@ -121,16 +128,8 @@ public class CreateBusquedaActivity extends AppCompatActivity {
                 Uri selectedImageUri = data.getData();
                 if(selectedImageUri != null){
                     try {
-                        InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                        imageTextView.setText("IMAGE LOADED");
-                        File selectedImageFile = new File(getPathFromUri(selectedImageUri));
-                        //Con este file se sube al SQLite
-
-                        InputStream imageInputStream = new DataInputStream(new FileInputStream(selectedImageFile));
-                        imgByte = new byte[imageInputStream.available()];
-
+                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        fromSC = true;
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -139,19 +138,28 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         }
     }
 
-    private String getPathFromUri(Uri contentUri){
-        String filePath;
-        Cursor cursor = getContentResolver()
-                .query(contentUri, null, null, null, null);
-        if(cursor == null){
-            filePath = contentUri.getPath();
-        }else{
-            cursor.moveToFirst();
-            int index = cursor.getColumnIndex("_data");
-            filePath = cursor.getString(index);
-            cursor.close();
+    private void saveImage(Bitmap bitmap){
+        File dir = new File(getFilesDir() + "/Screenshots/");
+        if(!dir.isFile()){
+            boolean mkdir = dir.mkdir();
+            if(mkdir){
+                Log.i("File creation", "Success: " + mkdir);
+            }else{
+                Log.i("File creation", "Already created: " + dir);
+            }
         }
-        return filePath;
+        File file = new File(dir, System.currentTimeMillis() + ".jpg");
+        try {
+            outputStream = new FileOutputStream(file);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+        Log.i("File path: ", file.getPath());
+
+        path = file.getPath();
     }
 
     //==============================================================================================
@@ -162,8 +170,13 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         if(!titleEditText.getText().toString().equals("") && !descripcionEditText.getText().toString().equals(""))
         {
             try {
+                if (fromSC) {
+                    saveImage(bitmap);
+                    Toast.makeText(getApplicationContext(), "Image Saved: " + path, Toast.LENGTH_SHORT).show();
+                }
                 String[] dataForDatabase = {titleEditText.getText().toString(), path, descripcionEditText.getText().toString()};
                 busquedaDataBase.addData(dataForDatabase);
+                Toast.makeText(getApplicationContext(), "Busqueda Saved", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -175,7 +188,6 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     }
 
     public void cancelBusqueda(View view){
-        busquedaDataBase.getData();
         finish();
     }
 }
