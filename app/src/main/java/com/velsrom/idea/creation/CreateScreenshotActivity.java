@@ -49,7 +49,6 @@ public class CreateScreenshotActivity extends AppCompatActivity {
     * */
 
     public static final int PICK_IMAGE = 1;
-    private static final int REQUEST_CODE_STORAGE_PERMISSION = 2;
 
     WebView webView;
     ImageView imageView;

@@ -1,8 +1,12 @@
 package com.velsrom.idea;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
     * TODO:
     *   - Crear clase para uso de base de datos en lugar de repetir el mismo codigo de anadir y obtener info!!!!!!!!!!!!!!
     *   - Crear activity para ver las busquedas (similar a la de ideas?)
+    *   - Seccion edit para las notas
     * */
+
+    private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
 
     ArrayList<String> menuOptions;
 
@@ -51,9 +58,24 @@ public class MainActivity extends AppCompatActivity {
 
         SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
 
-        Database.execSQL("CREATE TABLE IF NOT EXISTS ideas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
+        Database.execSQL("CREATE TABLE IF NOT EXISTS ideas (title VARCHAR, type VARCHAR, idea VARCHAR)");
         Database.execSQL("CREATE TABLE IF NOT EXISTS busquedas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
         Database.execSQL("CREATE TABLE IF NOT EXISTS glosario (palabra VARCHAR, definicion VARCHAR)");
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Show an explanation
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_CODE_STORAGE_PERMISSION);
+            }
+        } else {
+            // Permission has already been granted
+        }
 
         //==========================================================================================
         //==========================================================================================

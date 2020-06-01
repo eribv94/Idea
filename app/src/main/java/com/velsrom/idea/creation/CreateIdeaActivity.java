@@ -22,7 +22,6 @@ public class CreateIdeaActivity extends AppCompatActivity {
 
     /*
     * TODO:
-    *  - Revisar base de datos que guarde correctamente
     *  - Hacer lista de tipos en otra seccion? Mas facil de editar
     *  - Que codigo no dependa de "hardcode" de lista
     *  -
@@ -76,7 +75,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
                         typeSpinner.getSelectedItem().toString(),
                         ideaEditText.getText().toString()};
                 ideasDataBase.addData(dataForDatabase);
-                ideasDataBase.getData();
+                //ideasDataBase.getData();
 
                 Toast.makeText(getApplicationContext(), "Idea saved", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {

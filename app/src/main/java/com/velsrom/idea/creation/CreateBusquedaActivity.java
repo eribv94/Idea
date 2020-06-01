@@ -49,9 +49,6 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     String path = "";
     boolean fromSC = false;
 
-    byte[] imgByte;
-
-    OutputStream outputStream;
     Bitmap bitmap;
 
     @Override
@@ -83,7 +80,7 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     }
 
     //==============================================================================================
-    //==============================================================================================  Cargar imagen de memoria (editar)
+    //==============================================================================================
     //==============================================================================================
 
     public void loadImage(View view){
@@ -109,7 +106,6 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void selectImage(){
@@ -138,30 +134,6 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         }
     }
 
-    private void saveImage(Bitmap bitmap){
-        File dir = new File(getFilesDir() + "/Screenshots/");
-        if(!dir.isFile()){
-            boolean mkdir = dir.mkdir();
-            if(mkdir){
-                Log.i("File creation", "Success: " + mkdir);
-            }else{
-                Log.i("File creation", "Already created: " + dir);
-            }
-        }
-        File file = new File(dir, System.currentTimeMillis() + ".jpg");
-        try {
-            outputStream = new FileOutputStream(file);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-
-        Log.i("File path: ", file.getPath());
-
-        path = file.getPath();
-    }
-
     //==============================================================================================
     //==============================================================================================
     //==============================================================================================
@@ -171,7 +143,6 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         {
             try {
                 if (fromSC) {
-                    saveImage(bitmap);
                     Toast.makeText(getApplicationContext(), "Image Saved: " + path, Toast.LENGTH_SHORT).show();
                 }
                 String[] dataForDatabase = {titleEditText.getText().toString(), path, descripcionEditText.getText().toString()};
