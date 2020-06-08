@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().hide();
+
         //==========================================================================================
         // Si es la primera vez que usa el app, no tendra las tablas de bases de datos. Ejecutar esto (posible cambio)
         // poner booleano unico para ver si es la primera vez usando el app? O if con ese booleano para
@@ -87,102 +90,45 @@ public class MainActivity extends AppCompatActivity {
             // Permission has already been granted
         }
 
-        //==========================================================================================
-        //==========================================================================================
-        //==========================================================================================
-
-        ListView menuListView = findViewById(R.id.menuListView);
-
-        floatingAddMenu = findViewById(R.id.floatingMenu);
-        floatingAddIdea = findViewById(R.id.action_idea);
-        floatingAddBusqueda = findViewById(R.id.action_investigacion);
-        floatingAddScreenshot = findViewById(R.id.action_screenshot);
-        floatingAddGlosario = findViewById(R.id.action_glosario);
-        floatingAddIndice = findViewById(R.id.action_indice);
-
-        menuOptions = new ArrayList<>();
-        menuOptions.add("Ver ideas");
-        menuOptions.add("Que buscar/aprender");
-        menuOptions.add("Glosario");
-        menuOptions.add("Idea aleatoria");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, menuOptions);
-        menuListView.setAdapter(adapter);
-
-        menuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = null;
-                boolean isIntent = true;
-                switch (position) {
-                    case 0:
-                        intent = new Intent(MainActivity.this, IdeasActivity.class);
-                        break;
-                    case 1:
-                        intent = new Intent(MainActivity.this, BusquedasActivity.class);
-                        break;
-                    case 2:
-                        intent = new Intent(MainActivity.this, GlosarioActivity.class);
-                        break;
-                    case 3:
-                        randomBusqueda();
-                        isIntent = false;
-                        break;
-                }
-                if(isIntent) {startActivity(intent);}
-            }
-        });
 
 //=================================== FLOATING ADD MENU LISTENERS ==================================
 
-        floatingAddIdea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingAddMenu.collapse();
 
-                Intent ideaIntent = new Intent(MainActivity.this, CreateIdeaActivity.class);
-                startActivity(ideaIntent);
-            }
-        });
+    }
 
-        floatingAddBusqueda.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingAddMenu.collapse();
+    public void onClickSection(View view){
+        int tagClicked = Integer.parseInt(view.getTag().toString());
 
-                Intent intent = new Intent(MainActivity.this, CreateBusquedaActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        floatingAddScreenshot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingAddMenu.collapse();
-
-                Intent intent = new Intent(MainActivity.this, CreateScreenshotActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        floatingAddGlosario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingAddMenu.collapse();
-
-                Intent intent = new Intent(MainActivity.this, CreateGlosarioActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        floatingAddIndice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingAddMenu.collapse();
-
-                //Intent AQUI!
-            }
-        });
+        Intent intent = null;
+        boolean isIntent = true;
+        switch (tagClicked) {
+            case 0:
+                intent = new Intent(MainActivity.this, IdeasActivity.class);
+                break;
+            case 1:
+                intent = new Intent(MainActivity.this, BusquedasActivity.class);
+                break;
+            case 2:
+                intent = new Intent(MainActivity.this, GlosarioActivity.class);
+                break;
+            case 3:
+                intent = new Intent(MainActivity.this, CreateScreenshotActivity.class);
+                break;
+            case 4:
+                randomBusqueda();
+                isIntent = false;
+                break;
+            case 5:
+                intent = new Intent(MainActivity.this, CreateIdeaActivity.class);
+                break;
+            case 6:
+                intent = new Intent(MainActivity.this, CreateBusquedaActivity.class);
+                break;
+            case 7:
+                intent = new Intent(MainActivity.this, CreateGlosarioActivity.class);
+                break;
+        }
+        if(isIntent) {startActivity(intent);}
     }
 
 

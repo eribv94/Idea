@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6598FF"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/nunito_light"
         android:text="IDEA"
         android:textColor="#000000"
         android:textSize="36sp"
@@ -21,88 +22,152 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <ListView
-        android:id="@+id/menuListView"
+    <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginBottom="130dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView">
 
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/floatingMenu"
-        android:layout_width="103dp"
-        android:layout_height="70dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="40dp"
-        android:clickable="true"
-        app:fab_addButtonColorNormal="@color/colorPrimaryDark"
-        app:fab_addButtonColorPressed="@color/colorPrimary"
-        app:fab_addButtonPlusIconColor="#FFFFFF"
-        app:fab_labelStyle="@color/cardview_light_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginVertical="20dp"
+            android:orientation="horizontal">
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_indice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_addButtonColorNormal="@color/colorAccent"
-            app:fab_addButtonColorPressed="#42C1C1"
-            app:fab_icon="@drawable/ic_index"
-            app:fab_size="mini"
-            app:fab_title="Indice" />
+            <Button
+                android:id="@+id/ideaButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:background="#E8C409"
+                android:fontFamily="@font/nunito_bold"
+                android:onClick="onClickSection"
+                android:paddingLeft="20dp"
+                android:tag="0"
+                android:text="Ideas"
+                android:textAlignment="textStart" />
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_glosario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_addButtonColorNormal="@color/colorAccent"
-            app:fab_addButtonColorPressed="#42C1C1"
-            app:fab_icon="@drawable/ic_book"
-            app:fab_size="mini"
-            app:fab_title="Glosario" />
+            <Button
+                android:id="@+id/ideaAddButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:background="#E8C409"
+                android:fontFamily="@font/nunito_bold"
+                android:onClick="onClickSection"
+                android:tag="5"
+                android:text="+"
+                android:textSize="30sp" />
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_screenshot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_addButtonColorNormal="@color/colorAccent"
-            app:fab_addButtonColorPressed="#42C1C1"
-            app:fab_icon="@drawable/ic_phone"
-            app:fab_size="mini"
-            app:fab_title="Screenshot" />
+        </LinearLayout>
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_idea"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_addButtonColorNormal="@color/colorAccent"
-            app:fab_addButtonColorPressed="#42C1C1"
-            app:fab_icon="@drawable/ic_lightbulb"
-            app:fab_size="mini"
-            app:fab_title="Idea" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginVertical="20dp"
+            android:orientation="horizontal">
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_investigacion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fab_addButtonColorNormal="@color/colorAccent"
-            app:fab_addButtonColorPressed="#42C1C1"
-            app:fab_icon="@drawable/ic_search"
-            app:fab_size="mini"
-            app:fab_title="Busqueda" />
+            <Button
+                android:id="@+id/busquedaButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:background="#03D1EC"
+                android:fontFamily="@font/nunito_bold"
+                android:onClick="onClickSection"
+                android:paddingLeft="20dp"
+                android:tag="1"
+                android:text="Buscar/Aprender"
+                android:textAlignment="textStart" />
+
+            <Button
+                android:id="@+id/busquedaAddButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:background="#03D1EC"
+                android:fontFamily="@font/nunito_bold"
+                android:onClick="onClickSection"
+                android:tag="6"
+                android:text="+"
+                android:textSize="30sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginVertical="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/glosarioButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:background="#4CAF50"
+                android:fontFamily="@font/nunito_bold"
+                android:onClick="onClickSection"
+                android:paddingLeft="20dp"
+                android:tag="2"
+                android:text="Glosario"
+                android:textAlignment="textStart" />
+
+            <Button
+                android:id="@+id/glosarioAddButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:background="#4CAF50"
+                android:fontFamily="@font/nunito_bold"
+                android:onClick="onClickSection"
+                android:tag="7"
+                android:text="+"
+                android:textSize="30sp" />
+
+        </LinearLayout>
 
 
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+        <Button
+            android:id="@+id/scButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginVertical="20dp"
+            android:layout_weight="1"
+            android:background="#F64425"
+            android:fontFamily="@font/nunito_bold"
+            android:onClick="onClickSection"
+            android:textAlignment="textStart"
+            android:paddingLeft="20dp"
+            android:tag="3"
+            android:text="Screenshot" />
+
+        <Button
+            android:id="@+id/aleatorioButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginVertical="20dp"
+            android:layout_weight="1"
+            android:background="#B4E465FA"
+            android:fontFamily="@font/nunito_bold"
+            android:onClick="onClickSection"
+            android:textAlignment="textStart"
+            android:paddingLeft="20dp"
+            android:tag="4"
+            android:text="Aleatorio" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
