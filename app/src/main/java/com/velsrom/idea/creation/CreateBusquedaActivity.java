@@ -24,6 +24,9 @@ import android.widget.Toast;
 import com.velsrom.idea.IdeaDataBase;
 import com.velsrom.idea.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class CreateBusquedaActivity extends AppCompatActivity {
@@ -117,6 +120,7 @@ public class CreateBusquedaActivity extends AppCompatActivity {
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
                         fromSC = true;
+                        imageTextView.setText("Image Loaded");
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -130,10 +134,29 @@ public class CreateBusquedaActivity extends AppCompatActivity {
     //==============================================================================================
 
     public void saveBusqueda(View view){
+        OutputStream outputStream = null;
         if(!titleEditText.getText().toString().equals("") && !descripcionEditText.getText().toString().equals(""))
         {
             try {
                 if (fromSC) {
+                    File dir = new File(getFilesDir() + "/Screenshots/");
+                    if(!dir.isFile()){
+                        boolean mkdir = dir.mkdir();
+                        if(mkdir){
+                            Log.i("File creation", "Success: " + mkdir);
+                        }else{
+                            Log.i("File creation", "Already created: " + dir);
+                        }
+                    }
+                    File file = new File(dir, System.currentTimeMillis() + ".jpg");
+                    try {
+                        outputStream = new FileOutputStream(file);
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    path = file.getPath();
                     Toast.makeText(getApplicationContext(), "Image Saved: " + path, Toast.LENGTH_SHORT).show();
                 }
                 String[] dataForDatabase = {titleEditText.getText().toString(), path, descripcionEditText.getText().toString()};

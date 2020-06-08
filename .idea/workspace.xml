@@ -17,10 +17,12 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/BusquedasActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/BusquedasActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateBusquedaActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateBusquedaActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_busquedas.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_busquedas.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateScreenshotActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateScreenshotActivity.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,6 +63,10 @@
   </component>
   <component name="ProjectId" id="1cBSpK9Ruk34sLafzCv94KAHboE" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="0815f834f9070104" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-06-03T04:16:16.179Z" />
+  </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/src/main/res/layout/creation" />

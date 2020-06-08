@@ -62,7 +62,7 @@ public class CreateScreenshotActivity extends AppCompatActivity {
 
         webView = findViewById(R.id.webView);
         imageView = findViewById(R.id.imageView);
-        //webView.getSettings().setJavaScriptEnabled(true);  //ver vulnerabilidad y si es necesaria
+        webView.getSettings().setJavaScriptEnabled(true);  //ver vulnerabilidad y si es necesaria
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl("http://www.google.com");
     }

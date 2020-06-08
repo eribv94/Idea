@@ -5,15 +5,23 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -44,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton floatingAddScreenshot;
     FloatingActionButton floatingAddGlosario;
     FloatingActionButton floatingAddIndice;
+
+    Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +104,7 @@ public class MainActivity extends AppCompatActivity {
         menuOptions.add("Ver ideas");
         menuOptions.add("Que buscar/aprender");
         menuOptions.add("Glosario");
-        menuOptions.add("Indice");
-        menuOptions.add("Idea aleatoria (Proximamente)");
+        menuOptions.add("Idea aleatoria");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, menuOptions);
         menuListView.setAdapter(adapter);
@@ -104,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = null;
+                boolean isIntent = true;
                 switch (position) {
                     case 0:
                         intent = new Intent(MainActivity.this, IdeasActivity.class);
@@ -115,15 +125,11 @@ public class MainActivity extends AppCompatActivity {
                         intent = new Intent(MainActivity.this, GlosarioActivity.class);
                         break;
                     case 3:
-                        Toast.makeText(getApplicationContext(), "Clicked #3", Toast.LENGTH_SHORT).show();
-                        intent = new Intent(MainActivity.this, GlosarioActivity.class);  //No es su actividad
-                        break;
-                    case 4:
-                        Toast.makeText(getApplicationContext(), "Clicked #4", Toast.LENGTH_SHORT).show();
-                        intent = new Intent(MainActivity.this, GlosarioActivity.class);  //No es su actividad
+                        randomBusqueda();
+                        isIntent = false;
                         break;
                 }
-                startActivity(intent);
+                if(isIntent) {startActivity(intent);}
             }
         });
 
@@ -177,5 +183,78 @@ public class MainActivity extends AppCompatActivity {
                 //Intent AQUI!
             }
         });
+    }
+
+
+    public void randomBusqueda(){
+
+        dialog = new Dialog(this);
+
+        ArrayList<ArrayList<String>> busquedasOptions;
+
+        //final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        busquedasOptions = queryCreator("SELECT * FROM busquedas");
+
+        int numero = (int) (Math.random() * busquedasOptions.size());
+
+        openDialog(busquedasOptions.get(numero).get(0));
+
+    }
+
+    public void openDialog(String word){
+        //SI TIENE IMAGEN, QUE LA MUESTRE TAMBIEN
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        Cursor c = Database.rawQuery("SELECT * FROM busquedas WHERE title = \'" + word + "\' ", null);
+
+        int descripcionIdx = c.getColumnIndex("descripcion");
+        int pathIdx = c.getColumnIndex("path");
+        c.moveToFirst();
+        String descripcion = c.getString(descripcionIdx);
+        String path = c.getString(pathIdx);
+
+        Context context = this; //???
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final TextView titleBox = new TextView(context);
+        titleBox.setText(descripcion);
+        layout.addView(titleBox);
+
+        final ImageView image = new ImageView(context);
+
+        if(!path.equals("")){
+            Bitmap myBitmap = BitmapFactory.decodeFile(path);
+            image.setImageBitmap(myBitmap);
+            layout.addView(image);
+        }
+
+        dialog.setContentView(layout);
+        dialog.show();
+
+    }
+
+    private ArrayList<ArrayList<String>> queryCreator(String query) {
+        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        Cursor c = Database.rawQuery(query, null);
+        ArrayList<ArrayList<String>> array = new ArrayList<>();
+
+        int titleIndex = c.getColumnIndex("title");
+        int pathIndex = c.getColumnIndex("path");
+        int descripcionIndex = c.getColumnIndex("descripcion");
+
+        c.moveToFirst();
+
+        while (!c.isAfterLast()) {
+            //Crea arreglo de una idea con [titulo, tipo, idea] para poder agregar despuies al arreglo de ideas
+            ArrayList<String> idea = new ArrayList<>();
+            idea.add(c.getString(titleIndex));
+            idea.add(c.getString(pathIndex));
+            idea.add(c.getString(descripcionIndex));
+            //Se agrega idea al arreglo de ideas
+            array.add(idea);
+            c.moveToNext();
+        }
+
+        return array;
     }
 }
