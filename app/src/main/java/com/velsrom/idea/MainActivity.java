@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -45,20 +46,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
 
-    ArrayList<String> menuOptions;
-
-    FloatingActionsMenu floatingAddMenu;
-    FloatingActionButton floatingAddIdea;
-    FloatingActionButton floatingAddBusqueda;
-    FloatingActionButton floatingAddScreenshot;
-    FloatingActionButton floatingAddGlosario;
-    FloatingActionButton floatingAddIndice;
-
     Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().hide();
@@ -88,12 +82,8 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             // Permission has already been granted
+
         }
-
-
-//=================================== FLOATING ADD MENU LISTENERS ==================================
-
-
     }
 
     public void onClickSection(View view){
@@ -131,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         if(isIntent) {startActivity(intent);}
     }
 
+    //======================================= SECCION RANDOM  ======================================
 
     public void randomBusqueda(){
 
@@ -138,8 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<ArrayList<String>> busquedasOptions;
 
-        //final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-        busquedasOptions = queryCreator("SELECT * FROM busquedas");
+        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        QueryCreator queryCreator = new QueryCreator(Database);
+        busquedasOptions = queryCreator.createQuery("SELECT * FROM busquedas");
 
         int numero = (int) (Math.random() * busquedasOptions.size());
 
@@ -177,30 +169,5 @@ public class MainActivity extends AppCompatActivity {
         dialog.setContentView(layout);
         dialog.show();
 
-    }
-
-    private ArrayList<ArrayList<String>> queryCreator(String query) {
-        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-        Cursor c = Database.rawQuery(query, null);
-        ArrayList<ArrayList<String>> array = new ArrayList<>();
-
-        int titleIndex = c.getColumnIndex("title");
-        int pathIndex = c.getColumnIndex("path");
-        int descripcionIndex = c.getColumnIndex("descripcion");
-
-        c.moveToFirst();
-
-        while (!c.isAfterLast()) {
-            //Crea arreglo de una idea con [titulo, tipo, idea] para poder agregar despuies al arreglo de ideas
-            ArrayList<String> idea = new ArrayList<>();
-            idea.add(c.getString(titleIndex));
-            idea.add(c.getString(pathIndex));
-            idea.add(c.getString(descripcionIndex));
-            //Se agrega idea al arreglo de ideas
-            array.add(idea);
-            c.moveToNext();
-        }
-
-        return array;
     }
 }

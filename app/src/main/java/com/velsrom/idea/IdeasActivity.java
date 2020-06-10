@@ -2,15 +2,20 @@ package com.velsrom.idea;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.velsrom.idea.creation.CreateIdeaActivity;
 
 import java.util.ArrayList;
 
@@ -26,134 +31,97 @@ public class IdeasActivity extends AppCompatActivity {
     *
     * */
 
-    ListView ideasListView;
-    Spinner typeSpinner;
+//    ListView ideasListView;
+//    Spinner typeSpinner;
+//
+//    ArrayList<ArrayList<String>> ideasOptions;
+//    ArrayAdapter<String> ideasAdapter;
+//    ArrayList<String> adapterListTitles = new ArrayList<>();
+//    ArrayList<String> spinnerListTitles = new ArrayList<>();
 
-    ArrayList<ArrayList<String>> ideasOptions;
-    ArrayAdapter<String> ideasAdapter;
-    ArrayList<String> adapterListTitles = new ArrayList<>();
-    ArrayList<String> spinnerListTitles = new ArrayList<>();
+    QueryCreator queryCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ideas);
+        getSupportActionBar().hide();
 
-        ideasListView = findViewById(R.id.ideasListView);
-        typeSpinner = findViewById(R.id.typesSpinner);
 
-        ideasOptions = new ArrayList<>();
+//        ideasOptions = new ArrayList<>();
 
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-        ideasOptions = queryCreator("SELECT * FROM ideas");
+//        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+//        queryCreator = new QueryCreator(Database);
+//        ideasOptions = queryCreator.createQuery("SELECT * FROM ideas");
 
-        adapterListTitles = new ArrayList<>();
-        for(ArrayList<String> array : ideasOptions){
-            adapterListTitles.add(array.get(0));
-        }
-        ideasAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, adapterListTitles);
-        ideasListView.setAdapter(ideasAdapter);
+//        adapterListTitles = new ArrayList<>();
+//        for(ArrayList<String> array : ideasOptions){
+//            adapterListTitles.add(array.get(0));
+//        }
 
-        spinnerListTitles = new ArrayList<>();
-        spinnerListTitles.add("Todo");
-        spinnerListTitles.add("Ideas");
-        spinnerListTitles.add("Actividades");
-        spinnerListTitles.add("Invensiones");
-        spinnerListTitles.add("Pensamientos");
-        spinnerListTitles.add("Frases");
-
-        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, spinnerListTitles);
-        typeSpinner.setAdapter(spinnerAdapter);
-
-        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            //Seleccion de filtro en ideas
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                ideasOptions.clear();
-
-                switch (position){
-                    case 0: //Todas
-                        ideasOptions = queryCreator("SELECT * FROM ideas");
-                        break;
-                    case 1: //Ideas
-                        ideasOptions = queryCreator("SELECT * FROM ideas WHERE type = \"Ideas\"");
-                        break;
-                    case 2: //Actividades
-                        ideasOptions = queryCreator("SELECT * FROM ideas WHERE type = \"Actividades\"");
-                        break;
-                    case 3: //Invensiones
-                        ideasOptions = queryCreator("SELECT * FROM ideas WHERE type = \"Invensiones\"");
-                        break;
-                    case 4: //Pensamientos
-                        ideasOptions = queryCreator("SELECT * FROM ideas WHERE type = \"Pensamientos\"");
-                        break;
-                    case 5: //Frases
-                        ideasOptions = queryCreator("SELECT * FROM ideas WHERE type = \"Frases\"");
-                        break;
-                }
-
-                adapterListTitles.clear();
-                for(ArrayList<String> array : ideasOptions){
-                    adapterListTitles.add(array.get(0));
-                }
-                ideasAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) { }
-        });
-
-        ideasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), ideasOptions.get(position).get(0), Toast.LENGTH_SHORT).show();
-
-                //SELECCIONAR IDEA
-            }
-        });
-
-        ideasListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //BORRAR IDEA/MENU DE QUE HACER CON IDEA (editar, eliminar)
-                try {
-                    Database.delete("ideas", "title = " + "\'" + ideasOptions.get(position).get(0) + "\'", null);
-                    adapterListTitles.remove(position);
-                    ideasAdapter.notifyDataSetChanged();
-                    Toast.makeText(getApplicationContext(), "Idea eliminada", Toast.LENGTH_SHORT).show();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                return true;
-            }
-        });
+//        ideasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(getApplicationContext(), ideasOptions.get(position).get(0), Toast.LENGTH_SHORT).show();
+//
+//                //SELECCIONAR IDEA
+//            }
+//        });
+//
+//        ideasListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                //BORRAR IDEA/MENU DE QUE HACER CON IDEA (editar, eliminar)
+//                try {
+//                    Database.delete("ideas", "title = " + "\'" + ideasOptions.get(position).get(0) + "\'", null);
+//                    adapterListTitles.remove(position);
+//                    ideasAdapter.notifyDataSetChanged();
+//                    Toast.makeText(getApplicationContext(), "Idea eliminada", Toast.LENGTH_SHORT).show();
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//                return true;
+//            }
+//        });
     }
 
-    private ArrayList<ArrayList<String>> queryCreator(String query) {
-        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-        Cursor c = Database.rawQuery(query, null);
-        ArrayList<ArrayList<String>> array = new ArrayList<>();
+    public void ideaTypeSelected(View view){
+        int viewTag = Integer.parseInt(view.getTag().toString());
 
-        int titleIndex = c.getColumnIndex("title");
-        int typeIndex = c.getColumnIndex("type");
-        int ideaIndex = c.getColumnIndex("idea");
+        //MANDAR A LA ACTIVIDAD CON LAS IDEAS DEL CUADRO SELECCIONADO
 
-        c.moveToFirst();
-
-        while (!c.isAfterLast()) {
-            //Crea arreglo de una idea con [titulo, tipo, idea] para poder agregar despuies al arreglo de ideas
-            ArrayList<String> idea = new ArrayList<>();
-            idea.add(c.getString(titleIndex));
-            idea.add(c.getString(typeIndex));
-            idea.add(c.getString(ideaIndex));
-            //Se agrega idea al arreglo de ideas
-            array.add(idea);
-            c.moveToNext();
+        switch (viewTag){
+            case 0: //Ideas
+                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Ideas\"");
+                Toast.makeText(this, "Ideas", Toast.LENGTH_SHORT).show();
+                break;
+            case 1: //Actividades
+                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Actividades\"");
+                Toast.makeText(this, "Actividades", Toast.LENGTH_SHORT).show();
+                break;
+            case 2: //Invensiones
+                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Invensiones\"");
+                Toast.makeText(this, "Invensiones", Toast.LENGTH_SHORT).show();
+                break;
+            case 3: //Pensamientos
+                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Pensamientos\"");
+                Toast.makeText(this, "Pensamientos", Toast.LENGTH_SHORT).show();
+                break;
+            case 4: //Frases
+                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Frases\"");
+                Toast.makeText(this, "Frases", Toast.LENGTH_SHORT).show();
+                break;
+            case 5: //Otros
+                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas");
+                Toast.makeText(this, "Otros", Toast.LENGTH_SHORT).show();
+                break;
         }
-
-        return array;
     }
 
-
+    public void addIdea(View view){
+        Intent intent = new Intent(getApplicationContext(), CreateIdeaActivity.class);
+        startActivity(intent);
+    }
 }
