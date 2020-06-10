@@ -1,18 +1,20 @@
 package com.velsrom.idea;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.velsrom.idea.creation.CreateIdeaActivity;
@@ -20,107 +22,125 @@ import com.velsrom.idea.creation.CreateIdeaActivity;
 import java.util.ArrayList;
 
 public class IdeasActivity extends AppCompatActivity {
-
     /*
-    * TODO:
-    *  * Mejorar el mostrar idea y su descripcion (tal vez con cuadro flotante?)
-    *  - Agregar fechas para poder ordenar las ideas?
-    *  - Agregar id para referencias?
-    *  - Anadir seccion de editar (usar CreateIdeaActivity, en este caso)
-    *  - Agregar a base de datos una lista de "tipos" para su mejor busqueda, en lugar de agregarlos aqui con "hardcode"
-    *
-    * */
+     * FIXME:
+     *  - CUANDO SE AGREGA IDEA DESDE LA LISTA DE UN TIPO, NO SE RECARGA LISTA, TIENES QUE SALIRTE Y PONER EL TIPO OTRA VEZ!!!!!!!!!!!!!!!!!!!!!!!!!
+     *
+     * TODO:
+     *  * Mejorar el mostrar idea y su descripcion (tal vez con cuadro flotante?)
+     *  - ????:
+     *  - Agregar fechas para poder ordenar las ideas   ????
+     *  - Agregar id para referencias                   ????
+     *  - Agregar a base de datos una lista de "tipos" para su mejor busqueda, en lugar de agregarlos aqui con "hardcode"  ????
+     *
+     * */
 
-//    ListView ideasListView;
-//    Spinner typeSpinner;
-//
-//    ArrayList<ArrayList<String>> ideasOptions;
-//    ArrayAdapter<String> ideasAdapter;
-//    ArrayList<String> adapterListTitles = new ArrayList<>();
-//    ArrayList<String> spinnerListTitles = new ArrayList<>();
+        ListView ideasListView;
 
-    QueryCreator queryCreator;
+        ArrayList<ArrayList<String>> ideasOptions;
+        ArrayAdapter<String> ideasAdapter;
+        ArrayList<String> adapterListTitles = new ArrayList<>();
+
+        IdeaDataBase ideaDataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ideas);
-        getSupportActionBar().hide();
 
+        String ideaType = getIntent().getStringExtra("IDEA_TYPE");
 
-//        ideasOptions = new ArrayList<>();
+        TextView ideaTypeTextView = findViewById(R.id.ideaTypeTextView);
+        ideasListView = findViewById(R.id.dataTypeListView);
 
-//        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-//        queryCreator = new QueryCreator(Database);
-//        ideasOptions = queryCreator.createQuery("SELECT * FROM ideas");
+        ideaTypeTextView.setText(ideaType);
 
-//        adapterListTitles = new ArrayList<>();
-//        for(ArrayList<String> array : ideasOptions){
-//            adapterListTitles.add(array.get(0));
-//        }
+        registerForContextMenu(ideasListView);
 
-//        ideasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(getApplicationContext(), ideasOptions.get(position).get(0), Toast.LENGTH_SHORT).show();
-//
-//                //SELECCIONAR IDEA
-//            }
-//        });
-//
-//        ideasListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                //BORRAR IDEA/MENU DE QUE HACER CON IDEA (editar, eliminar)
-//                try {
-//                    Database.delete("ideas", "title = " + "\'" + ideasOptions.get(position).get(0) + "\'", null);
-//                    adapterListTitles.remove(position);
-//                    ideasAdapter.notifyDataSetChanged();
-//                    Toast.makeText(getApplicationContext(), "Idea eliminada", Toast.LENGTH_SHORT).show();
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//                return true;
-//            }
-//        });
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        ideaDataBase = new IdeaDataBase(Database);
+
+        String q = null;
+        switch (ideaType){
+            case "Ideas": //Ideas
+                q = "SELECT * FROM ideas WHERE type = \"Ideas\"";
+                break;
+            case "Actividades": //Actividades
+                q = "SELECT * FROM ideas WHERE type = \"Actividades\"";
+                break;
+            case "Invensiones": //Invensiones
+                q = "SELECT * FROM ideas WHERE type = \"Invensiones\"";
+                break;
+            case "Pensamientos": //Pensamientos
+                q = "SELECT * FROM ideas WHERE type = \"Pensamientos\"";
+                break;
+            case "Frases": //Frases
+                q = "SELECT * FROM ideas WHERE type = \"Frases\"";
+                break;
+            case "Otros": //Otros
+                q = "SELECT * FROM ideas WHERE type = \"Otros\"";
+                break;
+        }
+        ideasOptions = new ArrayList<>();
+        if(q != null) {
+            ideasOptions = ideaDataBase.createQuery(q);
+        }
+        else {
+            Log.i("-- DATA BASE REQUEST --", "FAILED IN SEARCH FOR IDEA TYPE FOR ACTIVITY in IdeasActivity.java");
+            finish();
+        }
+
+        adapterListTitles = new ArrayList<>();
+        for(ArrayList<String> array : ideasOptions){
+            adapterListTitles.add(array.get(0));
+        }
+
+        ideasAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, adapterListTitles);
+        ideasListView.setAdapter(ideasAdapter);
+
+        ideasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), ideasOptions.get(position).get(0), Toast.LENGTH_SHORT).show();
+
+                //SELECCIONAR IDEA, MOSTRAR SU INFO
+            }
+        });
     }
 
-    public void ideaTypeSelected(View view){
-        int viewTag = Integer.parseInt(view.getTag().toString());
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.longpress_options, menu);
+    }
 
-        //MANDAR A LA ACTIVIDAD CON LAS IDEAS DEL CUADRO SELECCIONADO
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int index = info.position;
+        View view = info.targetView;
 
-        switch (viewTag){
-            case 0: //Ideas
-                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Ideas\"");
-                Toast.makeText(this, "Ideas", Toast.LENGTH_SHORT).show();
-                break;
-            case 1: //Actividades
-                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Actividades\"");
-                Toast.makeText(this, "Actividades", Toast.LENGTH_SHORT).show();
-                break;
-            case 2: //Invensiones
-                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Invensiones\"");
-                Toast.makeText(this, "Invensiones", Toast.LENGTH_SHORT).show();
-                break;
-            case 3: //Pensamientos
-                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Pensamientos\"");
-                Toast.makeText(this, "Pensamientos", Toast.LENGTH_SHORT).show();
-                break;
-            case 4: //Frases
-                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas WHERE type = \"Frases\"");
-                Toast.makeText(this, "Frases", Toast.LENGTH_SHORT).show();
-                break;
-            case 5: //Otros
-                //ideasOptions = queryCreator.createQuery("SELECT * FROM ideas");
-                Toast.makeText(this, "Otros", Toast.LENGTH_SHORT).show();
-                break;
+        switch (item.getItemId()) {
+            case R.id.edit:
+                Toast.makeText(getApplicationContext(), "Edit idea", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.delete:
+                try {
+                    ideaDataBase.deleteRow(ideasOptions.get(index).get(0));
+                    adapterListTitles.remove(index);
+                    ideasAdapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(), "Idea eliminada", Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return true;
+            default:
+                return super.onContextItemSelected(item);
         }
     }
 
-    public void addIdea(View view){
+    public void addIdea(View view) {
         Intent intent = new Intent(getApplicationContext(), CreateIdeaActivity.class);
         startActivity(intent);
     }

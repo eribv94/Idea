@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F64425"
     tools:context=".creation.CreateScreenshotActivity">
 
     <ImageView
@@ -28,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" >
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
     </WebView>
 
@@ -50,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:fontFamily="@font/nunito_semibold"
             android:onClick="cancelActivity"
             android:text="@android:string/cancel" />
 
@@ -58,14 +60,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:fontFamily="@font/nunito_semibold"
             android:onClick="imageFromGallery"
-            android:text="image from gallery" />
+            android:text="gallery image" />
 
         <Button
             android:id="@+id/saveScreenButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:fontFamily="@font/nunito_semibold"
             android:onClick="saveScreen"
             android:text="save screen" />
     </LinearLayout>

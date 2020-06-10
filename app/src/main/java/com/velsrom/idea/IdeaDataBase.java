@@ -24,6 +24,10 @@ public class IdeaDataBase {
         this.dataTypes = dataTypes;
     }
 
+    public IdeaDataBase(SQLiteDatabase database) {
+        this.database = database;
+    }
+
     public void addData(String[] array){
         StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + databaseName + " (");
         for (int i = 0; i < columnNames.length; i++) {
@@ -56,6 +60,35 @@ public class IdeaDataBase {
             }
             c.moveToNext();
         }
+    }
+
+    public void deleteRow(String rowName){
+//        database.delete("ideas", "title = " + "\'" + ideasOptions.get(position).get(0) + "\'", null);
+        database.delete("ideas", "title = " + "\'" + rowName + "\'", null);
+    }
+
+    public ArrayList<ArrayList<String>> createQuery(String query) {
+        Cursor c = database.rawQuery(query, null);
+        ArrayList<ArrayList<String>> array = new ArrayList<>();
+
+        int titleIndex = c.getColumnIndex("title");
+        int typeIndex = c.getColumnIndex("type");
+        int ideaIndex = c.getColumnIndex("idea");
+
+        c.moveToFirst();
+
+        while (!c.isAfterLast()) {
+            //Crea arreglo de una idea con [titulo, tipo, idea] para poder agregar despuies al arreglo de ideas
+            ArrayList<String> idea = new ArrayList<>();
+            idea.add(c.getString(titleIndex));
+            idea.add(c.getString(typeIndex));
+            idea.add(c.getString(ideaIndex));
+            //Se agrega idea al arreglo de ideas
+            array.add(idea);
+            c.moveToNext();
+        }
+
+        return array;
     }
 }
 

@@ -14,20 +14,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.velsrom.idea.creation.CreateBusquedaActivity;
 import com.velsrom.idea.creation.CreateGlosarioActivity;
 import com.velsrom.idea.creation.CreateIdeaActivity;
@@ -54,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-
-        getSupportActionBar().hide();
 
         //==========================================================================================
         // Si es la primera vez que usa el app, no tendra las tablas de bases de datos. Ejecutar esto (posible cambio)
@@ -93,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isIntent = true;
         switch (tagClicked) {
             case 0:
-                intent = new Intent(MainActivity.this, IdeasActivity.class);
+                intent = new Intent(MainActivity.this, IdeasMenuActivity.class);
                 break;
             case 1:
                 intent = new Intent(MainActivity.this, BusquedasActivity.class);
@@ -130,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<ArrayList<String>> busquedasOptions;
 
         SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-        QueryCreator queryCreator = new QueryCreator(Database);
-        busquedasOptions = queryCreator.createQuery("SELECT * FROM busquedas");
+        IdeaDataBase ideaDataBase = new IdeaDataBase(Database);
+        busquedasOptions = ideaDataBase.createQuery("SELECT * FROM busquedas");
 
         int numero = (int) (Math.random() * busquedasOptions.size());
 

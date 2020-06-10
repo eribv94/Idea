@@ -3,6 +3,7 @@ package com.velsrom.idea.creation;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
         typeSpinner = findViewById(R.id.typeSpinner);
         ideaEditText = findViewById(R.id.descripcionEditText);
 
+
         ideaTypes = new ArrayList<>();
         ideaTypes.add("Seleccione tipo...");
         ideaTypes.add("Ideas"); //Como retos y apuestas
@@ -51,6 +53,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
         ideaTypes.add("Invensiones");
         ideaTypes.add("Pensamientos");
         ideaTypes.add("Frases");
+        ideaTypes.add("Otro");
 
         SQLiteDatabase database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
 
