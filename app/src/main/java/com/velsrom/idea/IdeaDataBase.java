@@ -67,6 +67,11 @@ public class IdeaDataBase {
         database.delete("ideas", "title = " + "\'" + rowName + "\'", null);
     }
 
+
+
+    //SOLO FUNCIONA PARA IDEAS, NO BUSQUEDA NI GLOSARIO. EDITAR PARA EL FUNCIONAMIENTO!!!!!!!!!!!!!!!!!!!!
+
+
     public ArrayList<ArrayList<String>> createQuery(String query) {
         Cursor c = database.rawQuery(query, null);
         ArrayList<ArrayList<String>> array = new ArrayList<>();

@@ -1,6 +1,7 @@
 package com.velsrom.idea;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -23,9 +24,6 @@ import java.util.ArrayList;
 
 public class IdeasActivity extends AppCompatActivity {
     /*
-     * FIXME:
-     *  - CUANDO SE AGREGA IDEA DESDE LA LISTA DE UN TIPO, NO SE RECARGA LISTA, TIENES QUE SALIRTE Y PONER EL TIPO OTRA VEZ!!!!!!!!!!!!!!!!!!!!!!!!!
-     *
      * TODO:
      *  * Mejorar el mostrar idea y su descripcion (tal vez con cuadro flotante?)
      *  - ????:
@@ -35,32 +33,36 @@ public class IdeasActivity extends AppCompatActivity {
      *
      * */
 
-        ListView ideasListView;
+    ListView ideasListView;
 
-        ArrayList<ArrayList<String>> ideasOptions;
-        ArrayAdapter<String> ideasAdapter;
-        ArrayList<String> adapterListTitles = new ArrayList<>();
+    ArrayList<ArrayList<String>> ideasOptions;
+    ArrayAdapter<String> ideasAdapter;
+    ArrayList<String> adapterListTitles;
 
-        IdeaDataBase ideaDataBase;
+    String ideaType;
+    String q;
+
+    IdeaDataBase ideaDataBase;
+
+    private static final int CREATE_IDEA_IN_IDEA_REQUEST = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ideas);
 
-        String ideaType = getIntent().getStringExtra("IDEA_TYPE");
-
         TextView ideaTypeTextView = findViewById(R.id.ideaTypeTextView);
         ideasListView = findViewById(R.id.dataTypeListView);
+        registerForContextMenu(ideasListView);
+
+        ideaType = getIntent().getStringExtra("IDEA_TYPE");
 
         ideaTypeTextView.setText(ideaType);
-
-        registerForContextMenu(ideasListView);
 
         final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
         ideaDataBase = new IdeaDataBase(Database);
 
-        String q = null;
+        q = null;
         switch (ideaType){
             case "Ideas": //Ideas
                 q = "SELECT * FROM ideas WHERE type = \"Ideas\"";
@@ -81,22 +83,13 @@ public class IdeasActivity extends AppCompatActivity {
                 q = "SELECT * FROM ideas WHERE type = \"Otros\"";
                 break;
         }
+
         ideasOptions = new ArrayList<>();
-        if(q != null) {
-            ideasOptions = ideaDataBase.createQuery(q);
-        }
-        else {
-            Log.i("-- DATA BASE REQUEST --", "FAILED IN SEARCH FOR IDEA TYPE FOR ACTIVITY in IdeasActivity.java");
-            finish();
-        }
-
         adapterListTitles = new ArrayList<>();
-        for(ArrayList<String> array : ideasOptions){
-            adapterListTitles.add(array.get(0));
-        }
-
         ideasAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, adapterListTitles);
         ideasListView.setAdapter(ideasAdapter);
+
+        updateDataInListView();
 
         ideasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -106,6 +99,24 @@ public class IdeasActivity extends AppCompatActivity {
                 //SELECCIONAR IDEA, MOSTRAR SU INFO
             }
         });
+    }
+
+    public void updateDataInListView(){
+        ideasOptions.clear();
+        adapterListTitles.clear();
+
+        if(q != null) {
+            ideasOptions = ideaDataBase.createQuery(q);
+            for(ArrayList<String> array : ideasOptions){
+                adapterListTitles.add(array.get(0));
+            }
+
+            ideasAdapter.notifyDataSetChanged();
+        }
+        else {
+            Log.i("-- DATA BASE REQUEST --", "FAILED IN SEARCH FOR IDEA TYPE FOR ACTIVITY in IdeasActivity.java");
+            finish();
+        }
     }
 
     @Override
@@ -142,6 +153,15 @@ public class IdeasActivity extends AppCompatActivity {
 
     public void addIdea(View view) {
         Intent intent = new Intent(getApplicationContext(), CreateIdeaActivity.class);
-        startActivity(intent);
+        intent.putExtra("IDEA_TYPE", ideaType);
+        startActivityForResult(intent, CREATE_IDEA_IN_IDEA_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == CREATE_IDEA_IN_IDEA_REQUEST){
+            updateDataInListView();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

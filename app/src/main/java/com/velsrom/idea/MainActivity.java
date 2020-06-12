@@ -32,9 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
     /*
     * TODO:
-    *   - Crear clase para uso de base de datos en lugar de repetir el mismo codigo de anadir y obtener info!!!!!!!!!!!!!!
-    *   - Crear activity para ver las busquedas (similar a la de ideas?)
-    *   - Seccion edit para las notas
+    *  - Sig version: poder ordenar de diferentes maneras las ideas/busquedas (fecha, titulo asc-desc, etc.)
+    *  - 
     * */
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;

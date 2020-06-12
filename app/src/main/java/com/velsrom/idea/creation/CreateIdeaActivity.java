@@ -25,7 +25,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
     * TODO:
     *  - Hacer lista de tipos en otra seccion? Mas facil de editar
     *  - Que codigo no dependa de "hardcode" de lista
-    *  -
+    *  - Hacer map "ideasTypes" para poder sacar id mas facil y seleccinar en el spinner mas facil
     * */
 
     EditText titleEditText;
@@ -41,10 +41,11 @@ public class CreateIdeaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_idea);
 
+        String type = getIntent().getStringExtra("IDEA_TYPE");
+
         titleEditText = findViewById(R.id.titleEditText);
         typeSpinner = findViewById(R.id.typeSpinner);
         ideaEditText = findViewById(R.id.descripcionEditText);
-
 
         ideaTypes = new ArrayList<>();
         ideaTypes.add("Seleccione tipo...");
@@ -65,6 +66,26 @@ public class CreateIdeaActivity extends AppCompatActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ideaTypes);
         typeSpinner.setAdapter(arrayAdapter);
 
+        switch (type){  //Tratar de hacerlo MAP
+            case "Ideas": //Ideas
+                typeSpinner.setSelection(1);
+                break;
+            case "Actividades": //Actividades
+                typeSpinner.setSelection(2);
+                break;
+            case "Invensiones": //Invensiones
+                typeSpinner.setSelection(1);
+                break;
+            case "Pensamientos": //Pensamientos
+                typeSpinner.setSelection(1);
+                break;
+            case "Frases": //Frases
+                typeSpinner.setSelection(1);
+                break;
+            case "Otros": //Otros
+                typeSpinner.setSelection(1);
+                break;
+        }
     }
 
     public void saveIdea(View view){
@@ -78,7 +99,6 @@ public class CreateIdeaActivity extends AppCompatActivity {
                         typeSpinner.getSelectedItem().toString(),
                         ideaEditText.getText().toString()};
                 ideasDataBase.addData(dataForDatabase);
-                //ideasDataBase.getData();
 
                 Toast.makeText(getApplicationContext(), "Idea saved", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
