@@ -42,7 +42,7 @@ public class BusquedasActivity extends AppCompatActivity {
 
         busquedasOptions = new ArrayList<>();
 
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         busquedasOptions = queryCreator("SELECT * FROM busquedas");
 
         adapterListTitles = new ArrayList<>();
@@ -80,7 +80,7 @@ public class BusquedasActivity extends AppCompatActivity {
 
     public void openDialog(String word){
         //SI TIENE IMAGEN, QUE LA MUESTRE TAMBIEN
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         Cursor c = Database.rawQuery("SELECT * FROM busquedas WHERE title = \'" + word + "\' ", null);
 
         int descripcionIdx = c.getColumnIndex("descripcion");
@@ -111,7 +111,7 @@ public class BusquedasActivity extends AppCompatActivity {
     }
 
     private ArrayList<ArrayList<String>> queryCreator(String query) {
-        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         Cursor c = Database.rawQuery(query, null);
         ArrayList<ArrayList<String>> array = new ArrayList<>();
 

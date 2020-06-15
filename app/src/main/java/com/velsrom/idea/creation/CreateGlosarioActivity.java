@@ -30,7 +30,7 @@ public class CreateGlosarioActivity extends AppCompatActivity {
         wordEditText = findViewById(R.id.wordEditText);
         descripcionEditText = findViewById(R.id.descripcionEditText);
 
-        SQLiteDatabase database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        SQLiteDatabase database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
 
         String[] columns = {"palabra", "definicion"};
         ArrayList<String> nameTypes= new ArrayList();

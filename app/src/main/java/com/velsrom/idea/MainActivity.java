@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     * TODO:
     *  - Sig version: poder ordenar de diferentes maneras las ideas/busquedas (fecha, titulo asc-desc, etc.)
-    *  - 
+    *  -
     * */
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
@@ -53,11 +53,23 @@ public class MainActivity extends AppCompatActivity {
         // ejecute este codigo 1 vez y cree la base de datos (hacer metodo)
         //==========================================================================================
 
-        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
 
-        Database.execSQL("CREATE TABLE IF NOT EXISTS ideas (title VARCHAR, type VARCHAR, idea VARCHAR)");
-        Database.execSQL("CREATE TABLE IF NOT EXISTS busquedas (title VARCHAR, path VARCHAR, descripcion VARCHAR)");
-        Database.execSQL("CREATE TABLE IF NOT EXISTS glosario (palabra VARCHAR, definicion VARCHAR)");
+//        Database.execSQL("CREATE TABLE IF NOT EXISTS ideas (title VARCHAR, type VARCHAR, idea VARCHAR)");
+        Database.execSQL("CREATE TABLE IF NOT EXISTS ideas (" +
+                "title VARCHAR, " +
+                "type VARCHAR, " +
+                "idea VARCHAR, " +
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT)");
+        Database.execSQL("CREATE TABLE IF NOT EXISTS busquedas (" +
+                "title VARCHAR, " +
+                "path VARCHAR, " +
+                "descripcion VARCHAR, " +
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT)");
+        Database.execSQL("CREATE TABLE IF NOT EXISTS glosario (" +
+                "palabra VARCHAR, " +
+                "definicion VARCHAR, " +
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT)");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -119,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<ArrayList<String>> busquedasOptions;
 
-        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-        IdeaDataBase ideaDataBase = new IdeaDataBase(Database);
+        SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
+        IdeaDataBase ideaDataBase = new IdeaDataBase(Database, "busquedas");
         busquedasOptions = ideaDataBase.createQuery("SELECT * FROM busquedas");
 
         int numero = (int) (Math.random() * busquedasOptions.size());
@@ -131,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openDialog(String word){
         //SI TIENE IMAGEN, QUE LA MUESTRE TAMBIEN
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         Cursor c = Database.rawQuery("SELECT * FROM busquedas WHERE title = \'" + word + "\' ", null);
 
         int descripcionIdx = c.getColumnIndex("descripcion");

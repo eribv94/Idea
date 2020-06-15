@@ -36,12 +36,17 @@ public class CreateIdeaActivity extends AppCompatActivity {
 
     ArrayList<String> ideaTypes;
 
+    boolean isEdit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_idea);
 
         String type = getIntent().getStringExtra("IDEA_TYPE");
+        String editRowName = getIntent().getStringExtra("EDIT_ROW_NAME");
+        String editRowText = getIntent().getStringExtra("EDIT_ROW_TEXT");
+        isEdit = getIntent().getBooleanExtra("IS_EDIT", false);
 
         titleEditText = findViewById(R.id.titleEditText);
         typeSpinner = findViewById(R.id.typeSpinner);
@@ -56,7 +61,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
         ideaTypes.add("Frases");
         ideaTypes.add("Otro");
 
-        SQLiteDatabase database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        SQLiteDatabase database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
 
         String[] columns = {"title", "type", "idea"};
         ArrayList<String> nameTypes= new ArrayList();
@@ -74,17 +79,23 @@ public class CreateIdeaActivity extends AppCompatActivity {
                 typeSpinner.setSelection(2);
                 break;
             case "Invensiones": //Invensiones
-                typeSpinner.setSelection(1);
+                typeSpinner.setSelection(3);
                 break;
             case "Pensamientos": //Pensamientos
-                typeSpinner.setSelection(1);
+                typeSpinner.setSelection(4);
                 break;
             case "Frases": //Frases
-                typeSpinner.setSelection(1);
+                typeSpinner.setSelection(5);
                 break;
             case "Otros": //Otros
-                typeSpinner.setSelection(1);
+                typeSpinner.setSelection(6);
                 break;
+        }
+
+        if(isEdit){
+            titleEditText.setText(editRowName);
+            titleEditText.setEnabled(false);
+            ideaEditText.setText(editRowText);
         }
     }
 
@@ -94,13 +105,17 @@ public class CreateIdeaActivity extends AppCompatActivity {
                 !ideaEditText.getText().toString().equals(""))
         {
             try {
-                String[] dataForDatabase = {
-                        titleEditText.getText().toString(),
-                        typeSpinner.getSelectedItem().toString(),
-                        ideaEditText.getText().toString()};
-                ideasDataBase.addData(dataForDatabase);
+                if(isEdit){
+                    ideasDataBase.editRow( titleEditText.getText().toString(), ideaEditText.getText().toString());
+                }else {
+                    String[] dataForDatabase = {
+                            titleEditText.getText().toString(),
+                            typeSpinner.getSelectedItem().toString(),
+                            ideaEditText.getText().toString()};
+                    ideasDataBase.addData(dataForDatabase);
 
-                Toast.makeText(getApplicationContext(), "Idea saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Idea saved", Toast.LENGTH_SHORT).show();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -45,6 +45,8 @@ public class IdeasActivity extends AppCompatActivity {
     IdeaDataBase ideaDataBase;
 
     private static final int CREATE_IDEA_IN_IDEA_REQUEST = 1001;
+    private static final int EDIT_IDEA_REQUEST = 1002;
+    public static final String DATABASE_NAME = "Idea";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +61,8 @@ public class IdeasActivity extends AppCompatActivity {
 
         ideaTypeTextView.setText(ideaType);
 
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
-        ideaDataBase = new IdeaDataBase(Database);
+        final SQLiteDatabase Database = this.openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
+        ideaDataBase = new IdeaDataBase(Database, "ideas");
 
         q = null;
         switch (ideaType){
@@ -134,7 +136,14 @@ public class IdeasActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.edit:
-                Toast.makeText(getApplicationContext(), "Edit idea", Toast.LENGTH_SHORT).show();
+
+                Intent editIntent = new Intent(getApplicationContext(), CreateIdeaActivity.class);
+                editIntent.putExtra("EDIT_ROW_NAME", ideasOptions.get(index).get(0));
+                editIntent.putExtra("EDIT_ROW_TEXT", ideasOptions.get(index).get(2));
+                editIntent.putExtra("IS_EDIT", true);
+                editIntent.putExtra("IDEA_TYPE", ideaType);
+                startActivityForResult(editIntent, EDIT_IDEA_REQUEST);
+
                 return true;
             case R.id.delete:
                 try {
@@ -160,6 +169,9 @@ public class IdeasActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == CREATE_IDEA_IN_IDEA_REQUEST){
+            updateDataInListView();
+        }
+        else if(requestCode == EDIT_IDEA_REQUEST){
             updateDataInListView();
         }
         super.onActivityResult(requestCode, resultCode, data);

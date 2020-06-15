@@ -65,7 +65,7 @@ public class CreateBusquedaActivity extends AppCompatActivity {
             path="";
         }
 
-        SQLiteDatabase databse = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        SQLiteDatabase databse = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
 
         String[] columns = {"title", "path", "descripcion"};
         ArrayList<String> nameTypes= new ArrayList();

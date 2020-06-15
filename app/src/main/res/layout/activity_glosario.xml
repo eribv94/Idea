@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F1C265"
+    android:background="#4CAF50"
     tools:context=".GlosarioActivity">
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="36dp"
+        android:fontFamily="@font/nunito_light"
         android:text="Glosario"
         android:textColor="#000000"
         android:textSize="36sp"

@@ -51,7 +51,7 @@ public class GlosarioActivity extends AppCompatActivity {
                 findViewById(R.id.uzTextView)
         };
 
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
 
         wordsArray = getWords("SELECT * FROM glosario WHERE (palabra BETWEEN 'A%'  AND 'E%') OR palabra LIKE 'E%' ORDER BY palabra ASC");
 
@@ -85,7 +85,7 @@ public class GlosarioActivity extends AppCompatActivity {
     }
 
     public void openDialog(String word){
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         Cursor c = Database.rawQuery("SELECT * FROM glosario WHERE palabra = \'" + word + "\' ", null);
 
         int definicionIdx = c.getColumnIndex("definicion");
@@ -136,7 +136,7 @@ public class GlosarioActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> getWords(String query){
-        SQLiteDatabase Database = this.openOrCreateDatabase("Ideas", MODE_PRIVATE, null);
+        SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         Cursor c = Database.rawQuery(query, null);
         ArrayList<String> array = new ArrayList<>();
 
