@@ -135,7 +135,7 @@ public class CreateBusquedaActivity extends AppCompatActivity {
 
     public void saveBusqueda(View view){
         OutputStream outputStream = null;
-        if(!titleEditText.getText().toString().equals("") && !descripcionEditText.getText().toString().equals(""))
+        if(!titleEditText.getText().toString().equals(""))
         {
             try {
                 if (fromSC) {

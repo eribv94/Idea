@@ -48,6 +48,10 @@ public class CreateIdeaActivity extends AppCompatActivity {
         String editRowText = getIntent().getStringExtra("EDIT_ROW_TEXT");
         isEdit = getIntent().getBooleanExtra("IS_EDIT", false);
 
+        if(type == null){
+            type = "";
+        }
+
         titleEditText = findViewById(R.id.titleEditText);
         typeSpinner = findViewById(R.id.typeSpinner);
         ideaEditText = findViewById(R.id.descripcionEditText);
@@ -90,19 +94,23 @@ public class CreateIdeaActivity extends AppCompatActivity {
             case "Otros": //Otros
                 typeSpinner.setSelection(6);
                 break;
+            default:
+                typeSpinner.setSelection(0);
+                break;
         }
 
         if(isEdit){
             titleEditText.setText(editRowName);
             titleEditText.setEnabled(false);
+            typeSpinner.setEnabled(false);
             ideaEditText.setText(editRowText);
         }
     }
 
     public void saveIdea(View view){
         if(!titleEditText.getText().toString().equals("") &&
-                typeSpinner.getSelectedItemPosition() != 0 &&
-                !ideaEditText.getText().toString().equals(""))
+                typeSpinner.getSelectedItemPosition() != 0 )
+//                && !ideaEditText.getText().toString().equals(""))
         {
             try {
                 if(isEdit){

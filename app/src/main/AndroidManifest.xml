@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/appicon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".IdeasActivity"></activity>
+        <activity android:name=".PalabraGlosarioActivity"></activity>
+        <activity android:name=".IdeasActivity" />
         <activity android:name=".BusquedasActivity" />
         <activity android:name=".GlosarioActivity" />
         <activity android:name=".creation.CreateGlosarioActivity" />

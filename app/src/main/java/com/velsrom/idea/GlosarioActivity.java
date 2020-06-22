@@ -3,11 +3,13 @@ package com.velsrom.idea;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -61,9 +63,10 @@ public class GlosarioActivity extends AppCompatActivity {
         glosarioLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), wordsArray.get(position), Toast.LENGTH_SHORT).show();
-
-                openDialog(wordsArray.get(position));
+                Intent definicionIntent = new Intent(getApplicationContext(), PalabraGlosarioActivity.class);
+                definicionIntent.putExtra("WORD", wordsArray.get(position));
+                definicionIntent.putExtra("DEFINICION", buscaDefinicion(wordsArray.get(position)));
+                startActivity(definicionIntent);
             }
         });
 
@@ -84,7 +87,7 @@ public class GlosarioActivity extends AppCompatActivity {
         });
     }
 
-    public void openDialog(String word){
+    public String buscaDefinicion(String word){
         final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         Cursor c = Database.rawQuery("SELECT * FROM glosario WHERE palabra = \'" + word + "\' ", null);
 
@@ -92,13 +95,24 @@ public class GlosarioActivity extends AppCompatActivity {
         c.moveToFirst();
         String definicion = c.getString(definicionIdx);
 
-        TextView dialogText;
-        dialog.setContentView(R.layout.layout_dialog);
-        dialogText = dialog.findViewById(R.id.definicionTextView);
-        dialogText.setText(definicion);
-        dialog.show();
-
+        return definicion;
     }
+
+//    public void openDialog(String word){
+//        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
+//        Cursor c = Database.rawQuery("SELECT * FROM glosario WHERE palabra = \'" + word + "\' ", null);
+//
+//        int definicionIdx = c.getColumnIndex("definicion");
+//        c.moveToFirst();
+//        String definicion = c.getString(definicionIdx);
+//
+//        TextView dialogText;
+//        dialog.setContentView(R.layout.layout_dialog);
+//        dialogText = dialog.findViewById(R.id.definicionTextView);
+//        dialogText.setText(definicion);
+//        dialog.show();
+//
+//    }
 
     public void onClickLetters(View view){
         int selected = Integer.valueOf(view.getTag().toString());
@@ -150,5 +164,13 @@ public class GlosarioActivity extends AppCompatActivity {
         }
 
         return array;
+    }
+
+    public void updateDataInListView(String letterRange){
+        wordsArray.clear();
+        //Dar el query para que busque otra vez
+        wordsArray = getWords("SELECT * FROM glosario WHERE (palabra BETWEEN 'A%'  AND 'E%') OR palabra LIKE 'E%' ORDER BY palabra ASC");
+
+        wordsAdapter.notifyDataSetChanged();
     }
 }

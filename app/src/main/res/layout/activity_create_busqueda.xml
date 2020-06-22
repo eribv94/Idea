@@ -10,35 +10,55 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="66dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="2dp"
+        android:fontFamily="@font/nunito_bold"
         android:text="Create Busqueda"
+        android:textColor="#03D1EC"
         android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:fontFamily="@font/nunito_bold"
+        android:text="Create Busqueda"
+        android:textColor="#000000"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/titleEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="58dp"
-        android:layout_marginTop="22dp"
+        android:layout_width="225dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
         android:ems="10"
+        android:fontFamily="@font/nunito_light"
         android:hint="Que aprender?"
         android:inputType="textPersonName"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintBottom_toBottomOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="315dp"
-        android:text="Title"
+        android:layout_marginTop="36dp"
+        android:fontFamily="@font/nunito_light"
+        android:text="Buscar:"
+        android:textColor="#000000"
         android:textSize="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -46,34 +66,36 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
         android:layout_marginTop="31dp"
+        android:fontFamily="@font/nunito_light"
         android:text="Image"
+        android:textColor="#000000"
         android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="30dp"
-        android:text="Descripcion"
+        android:layout_marginTop="31dp"
+        android:fontFamily="@font/nunito_light"
+        android:text="Descripcion (opcional)"
+        android:textColor="#000000"
         android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <EditText
         android:id="@+id/descripcionEditText"
         android:layout_width="318dp"
         android:layout_height="181dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
         android:ems="10"
+        android:fontFamily="@font/nunito_light"
         android:gravity="start"
         android:inputType="textMultiLine"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <LinearLayout
@@ -91,6 +113,7 @@
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
+            android:fontFamily="@font/nunito_semibold"
             android:onClick="cancelBusqueda"
             android:text="@android:string/cancel" />
 
@@ -100,6 +123,7 @@
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
+            android:fontFamily="@font/nunito_semibold"
             android:onClick="saveBusqueda"
             android:text="Save" />
     </LinearLayout>
@@ -108,23 +132,24 @@
         android:id="@+id/imageTextView"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="32dp"
-        android:text="Imagen?"
+        android:layout_marginStart="30dp"
+        android:fontFamily="@font/nunito_light"
+        android:text="No Image Attached"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
         app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/titleEditText" />
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="69dp"
         android:layout_height="35dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="60dp"
+        android:fontFamily="@font/nunito_semibold"
         android:onClick="loadImage"
         android:text="load"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleEditText" />
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+        app:layout_constraintEnd_toEndOf="@+id/titleEditText"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

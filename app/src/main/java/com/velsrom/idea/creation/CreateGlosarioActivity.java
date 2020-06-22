@@ -19,6 +19,8 @@ import java.util.ArrayList;
 public class CreateGlosarioActivity extends AppCompatActivity {
 
     EditText wordEditText, descripcionEditText;
+    String word, definicion;
+    boolean isEdit = false;
 
     IdeaDataBase glosarioDataBase;
 
@@ -26,6 +28,13 @@ public class CreateGlosarioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_glosario);
+
+        word = getIntent().getStringExtra("WORD");
+        definicion = getIntent().getStringExtra("DEFINICION");
+
+        if(word != null || definicion != null){
+            isEdit = true;
+        }
 
         wordEditText = findViewById(R.id.wordEditText);
         descripcionEditText = findViewById(R.id.descripcionEditText);
@@ -36,27 +45,35 @@ public class CreateGlosarioActivity extends AppCompatActivity {
         ArrayList<String> nameTypes= new ArrayList();
 
         glosarioDataBase = new IdeaDataBase(database, "glosario", columns, nameTypes);
+
+        if(isEdit){
+            wordEditText.setText(word);
+            descripcionEditText.setText(definicion);
+        }
     }
 
     public void saveWord(View view){
+
         String word = wordEditText.getText().toString();
         String capitalizedWord = word.substring(0, 1).toUpperCase() + word.substring(1);
         String definicion = descripcionEditText.getText().toString();
 
-        if(!word.equals("") && !definicion.equals(""))
-        {
-            try {
-                String[] dataForDatabase = {capitalizedWord, definicion};
-                glosarioDataBase.addData(dataForDatabase);
-                glosarioDataBase.getData();
+        if (!word.equals("") && !definicion.equals("")) {
+            if(isEdit) {
+                glosarioDataBase.editRow(wordEditText.getText().toString(), descripcionEditText.getText().toString());
+            }else {
+                try {
+                    String[] dataForDatabase = {capitalizedWord, definicion};
+                    glosarioDataBase.addData(dataForDatabase);
+                    glosarioDataBase.getData();
 
-                Toast.makeText(getApplicationContext(), "Word saved", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Word saved", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             finish();
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "Llenar los datos correctamente", Toast.LENGTH_SHORT).show();
         }
     }
