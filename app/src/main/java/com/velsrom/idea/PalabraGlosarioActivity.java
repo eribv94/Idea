@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -11,6 +13,10 @@ import android.widget.TextView;
 import com.velsrom.idea.creation.CreateGlosarioActivity;
 
 public class PalabraGlosarioActivity extends AppCompatActivity {
+
+    TextView definicionTextView;
+    TextView blackWordTextView;
+    TextView greenWordTextView;
 
     String word;
     String definicion;
@@ -21,9 +27,9 @@ public class PalabraGlosarioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palabra_glosario);
 
-        TextView definicionTextView = findViewById(R.id.palabraTextView);
-        TextView blackWordTextView = findViewById(R.id.blackTextView);
-        TextView greenWordTextView = findViewById(R.id.greenTextView);
+        definicionTextView = findViewById(R.id.palabraTextView);
+        blackWordTextView = findViewById(R.id.blackTextView);
+        greenWordTextView = findViewById(R.id.greenTextView);
 
         word = getIntent().getStringExtra("WORD");
         definicion = getIntent().getStringExtra("DEFINICION");
@@ -43,8 +49,24 @@ public class PalabraGlosarioActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == EDIT_REQUEST_CODE){
-            //Update data?
+            refreshContent();
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void refreshContent(){
+        definicion = buscaDefinicion();
+        definicionTextView.setText(definicion);
+    }
+
+    public String buscaDefinicion(){
+        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
+        Cursor c = Database.rawQuery("SELECT * FROM glosario WHERE palabra = \'" + word + "\' ", null);
+
+        int definicionIdx = c.getColumnIndex("definicion");
+        c.moveToFirst();
+        String definicion = c.getString(definicionIdx);
+
+        return definicion;
     }
 }

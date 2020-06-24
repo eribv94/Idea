@@ -31,14 +31,14 @@ public class IdeaDataBase {
 
     public void addData(String[] array){
         StringBuilder query = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableName + " (");
-        for (int i = 0; i < columnNames.length; i++) {
+        for (int i = 0; i < columnNames.length - 1; i++) { //-1 porque el ultimo es ID y se crea solo
             query.append(" " + columnNames[i] + " VARCHAR,");
         }
         query.setCharAt(query.length() - 1, ')');
         database.execSQL(query.toString());
 
         ContentValues cv = new ContentValues();
-        for (int i = 0; i < columnNames.length; i++) {
+        for (int i = 0; i < columnNames.length - 1; i++) {
             cv.put(columnNames[i], array[i]);
         }
         database.insert(tableName, null, cv);
@@ -79,9 +79,10 @@ public class IdeaDataBase {
         database.delete(tableName, where + " = " + "\'" + rowName + "\'", null);
     }
 
-    public void editRow(String rowName, String text){
+    public void editRow(String rowName, String text, int id){
         if(tableName.equals("glosario")){
-            database.execSQL("UPDATE " + tableName + " SET definicion = \"" + text + "\" WHERE palabra = \'" + rowName + "\'");
+            String q = "UPDATE " + tableName + " SET palabra = \"" + rowName + "\", definicion = \"" + text + "\" WHERE id = " + id;
+            database.execSQL(q);
         }else {
             database.execSQL("UPDATE " + tableName + " SET " + columnNames[2] + " = \"" + text + "\" WHERE title = \'" + rowName + "\'");
         }
@@ -94,40 +95,52 @@ public class IdeaDataBase {
     //SOLO FUNCIONA PARA IDEAS, NO BUSQUEDA NI GLOSARIO. EDITAR PARA EL FUNCIONAMIENTO!!!!!!!!!!!!!!!!!!!!
 
 
-    public ArrayList<ArrayList<String>> createQuery(String query) {
+    //Metodo te da lista de elementos en la base de datos. Aqui el query es general para obtener TODOS los elementos
+    // Ej. idea cada elemento tiene 3 elementos, titulo, tipo e idea.
+    public ArrayList<ArrayList<String>> getAllElements(String query) {
         Cursor c = database.rawQuery(query, null);
         ArrayList<ArrayList<String>> array = new ArrayList<>();
 
-        int firstColumnIndex = -1;
-        int secondColumnIndex = -1;
-        int thirdColumnIndex = -1;
+        int[] idxs = null;
         switch (tableName) {
             case "ideas":
-                firstColumnIndex = c.getColumnIndex("title");
-                secondColumnIndex = c.getColumnIndex("type");
-                thirdColumnIndex = c.getColumnIndex("idea");
+                idxs = new int[]{
+                    c.getColumnIndex("title"),
+                    c.getColumnIndex("type"),
+                    c.getColumnIndex("idea"),
+                    c.getColumnIndex("id")
+                };
                 break;
             case "busquedas":
-                firstColumnIndex = c.getColumnIndex("title");
-                secondColumnIndex = c.getColumnIndex("path");
-                thirdColumnIndex = c.getColumnIndex("descripcion");
+                idxs = new int[]{
+                    c.getColumnIndex("title"),
+                    c.getColumnIndex("path"),
+                    c.getColumnIndex("descripcion"),
+                    c.getColumnIndex("id")
+                };
                 break;
             case "glosario":
-                firstColumnIndex = c.getColumnIndex("palabra");
+                idxs = new int[]{
+                    c.getColumnIndex("palabra"),
+                    c.getColumnIndex("definicion"),
+                    c.getColumnIndex("id")
+                };
                 break;
         }
 
         c.moveToFirst();
 
-        while (!c.isAfterLast()) {
-            //Crea arreglo de una idea con [titulo, tipo, idea] para poder agregar despuies al arreglo de ideas
-            ArrayList<String> idea = new ArrayList<>();
-            idea.add(c.getString(firstColumnIndex));
-            idea.add(c.getString(secondColumnIndex));
-            idea.add(c.getString(thirdColumnIndex));
-            //Se agrega idea al arreglo de ideas
-            array.add(idea);
-            c.moveToNext();
+        if (idxs != null){
+            while (!c.isAfterLast()) {
+                //Crea arreglo de una idea con [titulo, tipo, idea] para poder agregar despuies al arreglo de ideas
+                ArrayList<String> idea = new ArrayList<>();
+                for (int idx : idxs) { //Pasa por el arreglo de indices de los punteros
+                    idea.add(c.getString(idx));
+                }
+                //Se agrega idea al arreglo de ideas
+                array.add(idea);
+                c.moveToNext();
+            }
         }
         return array;
     }

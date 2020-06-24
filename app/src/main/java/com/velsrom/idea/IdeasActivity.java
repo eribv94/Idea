@@ -28,7 +28,6 @@ public class IdeasActivity extends AppCompatActivity {
      *  * Mejorar el mostrar idea y su descripcion (tal vez con cuadro flotante?)
      *  - ????:
      *  - Agregar fechas para poder ordenar las ideas   ????
-     *  - Agregar id para referencias                   ????
      *  - Agregar a base de datos una lista de "tipos" para su mejor busqueda, en lugar de agregarlos aqui con "hardcode"  ????
      *
      * */
@@ -40,7 +39,7 @@ public class IdeasActivity extends AppCompatActivity {
     ArrayList<String> adapterListTitles;
 
     String ideaType;
-    String q;
+    String query;
 
     IdeaDataBase ideaDataBase;
 
@@ -64,25 +63,25 @@ public class IdeasActivity extends AppCompatActivity {
         final SQLiteDatabase Database = this.openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
         ideaDataBase = new IdeaDataBase(Database, "ideas");
 
-        q = null;
+        query = null;
         switch (ideaType){
             case "Ideas": //Ideas
-                q = "SELECT * FROM ideas WHERE type = \"Ideas\"";
+                query = "SELECT * FROM ideas WHERE type = \"Ideas\"";
                 break;
             case "Actividades": //Actividades
-                q = "SELECT * FROM ideas WHERE type = \"Actividades\"";
+                query = "SELECT * FROM ideas WHERE type = \"Actividades\"";
                 break;
             case "Invensiones": //Invensiones
-                q = "SELECT * FROM ideas WHERE type = \"Invensiones\"";
+                query = "SELECT * FROM ideas WHERE type = \"Invensiones\"";
                 break;
             case "Pensamientos": //Pensamientos
-                q = "SELECT * FROM ideas WHERE type = \"Pensamientos\"";
+                query = "SELECT * FROM ideas WHERE type = \"Pensamientos\"";
                 break;
             case "Frases": //Frases
-                q = "SELECT * FROM ideas WHERE type = \"Frases\"";
+                query = "SELECT * FROM ideas WHERE type = \"Frases\"";
                 break;
             case "Otros": //Otros
-                q = "SELECT * FROM ideas WHERE type = \"Otros\"";
+                query = "SELECT * FROM ideas WHERE type = \"Otros\"";
                 break;
         }
 
@@ -107,8 +106,8 @@ public class IdeasActivity extends AppCompatActivity {
         ideasOptions.clear();
         adapterListTitles.clear();
 
-        if(q != null) {
-            ideasOptions = ideaDataBase.createQuery(q);
+        if(query != null) {
+            ideasOptions = ideaDataBase.getAllElements(query);
             for(ArrayList<String> array : ideasOptions){
                 adapterListTitles.add(array.get(0));
             }
@@ -140,8 +139,9 @@ public class IdeasActivity extends AppCompatActivity {
                 Intent editIntent = new Intent(getApplicationContext(), CreateIdeaActivity.class);
                 editIntent.putExtra("EDIT_ROW_NAME", ideasOptions.get(index).get(0));
                 editIntent.putExtra("EDIT_ROW_TEXT", ideasOptions.get(index).get(2));
-                editIntent.putExtra("IS_EDIT", true);
+                editIntent.putExtra("EDIT_ROW_ID", Integer.valueOf(ideasOptions.get(index).get(3)));
                 editIntent.putExtra("IDEA_TYPE", ideaType);
+//                editIntent.putExtra("IS_EDIT", true);
                 startActivityForResult(editIntent, EDIT_IDEA_REQUEST);
 
                 return true;

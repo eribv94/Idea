@@ -1,5 +1,7 @@
 package com.velsrom.idea;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
@@ -8,14 +10,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.velsrom.idea.creation.CreateGlosarioActivity;
+import com.velsrom.idea.creation.CreateIdeaActivity;
 
 import java.util.ArrayList;
 
@@ -27,13 +34,19 @@ public class GlosarioActivity extends AppCompatActivity {
     *   - Edicion de palabras (editar definicion)
     * */
 
+    public static final int EDIT_GLOSARIO_REQUEST = 1001;
+    public static final int ADD_GLOSARIO_REQUEST = 1002;
+
     TextView[] selectedSection;
     ListView glosarioLV;
 
-    ArrayAdapter<String> wordsAdapter;
-    ArrayList<String> wordsArray;
+    IdeaDataBase ideaDataBase;
 
-    Dialog dialog;
+    ArrayAdapter<String> wordsAdapter;
+    ArrayList<ArrayList<String>> wordsArray;
+    ArrayList<String> palabraArray;
+
+    String lastQuery;
 
     int currentSelected = 0;
 
@@ -41,8 +54,6 @@ public class GlosarioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glosario);
-
-        dialog = new Dialog(this);
 
         glosarioLV = findViewById(R.id.glosarioListView);
         selectedSection = new TextView[]{
@@ -54,65 +65,95 @@ public class GlosarioActivity extends AppCompatActivity {
         };
 
         final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
+        String[] columns = {"palabra", "definicion"};
+        ArrayList<String> nameTypes= new ArrayList();
+        ideaDataBase = new IdeaDataBase(Database, "glosario", columns, nameTypes);
 
-        wordsArray = getWords("SELECT * FROM glosario WHERE (palabra BETWEEN 'A%'  AND 'E%') OR palabra LIKE 'E%' ORDER BY palabra ASC");
+        palabraArray = new ArrayList<>();
+        lastQuery = "SELECT * FROM glosario WHERE (palabra BETWEEN 'A%'  AND 'E%') OR palabra LIKE 'E%' ORDER BY palabra ASC";
+        wordsArray = ideaDataBase.getAllElements(lastQuery);
+        for(ArrayList<String> array : wordsArray){
+            palabraArray.add(array.get(0));
+        }
 
-        wordsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, wordsArray);
+        wordsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, palabraArray);
         glosarioLV.setAdapter(wordsAdapter);
 
         glosarioLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent definicionIntent = new Intent(getApplicationContext(), PalabraGlosarioActivity.class);
-                definicionIntent.putExtra("WORD", wordsArray.get(position));
-                definicionIntent.putExtra("DEFINICION", buscaDefinicion(wordsArray.get(position)));
+                definicionIntent.putExtra("WORD", palabraArray.get(position));
+                definicionIntent.putExtra("DEFINICION", wordsArray.get(position).get(1));
                 startActivity(definicionIntent);
             }
         });
 
-        glosarioLV.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //BORRAR IDEA/MENU DE QUE HACER CON IDEA (editar, eliminar)
+        registerForContextMenu(glosarioLV);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.longpress_options, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int index = info.position;
+        View view = info.targetView;
+
+        switch (item.getItemId()) {
+            case R.id.edit:
+                Intent editIntent = new Intent(getApplicationContext(), CreateGlosarioActivity.class);
+                editIntent.putExtra("ID", Integer.valueOf(wordsArray.get(index).get(2)));
+                editIntent.putExtra("WORD", wordsArray.get(index).get(0));
+                editIntent.putExtra("DEFINICION", wordsArray.get(index).get(1));
+                startActivityForResult(editIntent, EDIT_GLOSARIO_REQUEST);
+                return true;
+            case R.id.delete:
                 try {
-                    Database.delete("glosario", "palabra = " + "\'" + wordsArray.get(position)+ "\'", null);
-                    wordsArray.remove(position);
+                    ideaDataBase.deleteRow(palabraArray.get(index));
+                    palabraArray.remove(index);
                     wordsAdapter.notifyDataSetChanged();
+
                     Toast.makeText(getApplicationContext(), "Palabra eliminada", Toast.LENGTH_SHORT).show();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
                 return true;
-            }
-        });
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
-    public String buscaDefinicion(String word){
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
-        Cursor c = Database.rawQuery("SELECT * FROM glosario WHERE palabra = \'" + word + "\' ", null);
-
-        int definicionIdx = c.getColumnIndex("definicion");
-        c.moveToFirst();
-        String definicion = c.getString(definicionIdx);
-
-        return definicion;
+    public void addPalabra(View view){
+        Intent addIntent = new Intent(getApplicationContext(), CreateGlosarioActivity.class);
+        startActivityForResult(addIntent, ADD_GLOSARIO_REQUEST);
     }
 
-//    public void openDialog(String word){
-//        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
-//        Cursor c = Database.rawQuery("SELECT * FROM glosario WHERE palabra = \'" + word + "\' ", null);
-//
-//        int definicionIdx = c.getColumnIndex("definicion");
-//        c.moveToFirst();
-//        String definicion = c.getString(definicionIdx);
-//
-//        TextView dialogText;
-//        dialog.setContentView(R.layout.layout_dialog);
-//        dialogText = dialog.findViewById(R.id.definicionTextView);
-//        dialogText.setText(definicion);
-//        dialog.show();
-//
-//    }
+    public void updateDataInListView(){
+        wordsArray.clear();
+        palabraArray.clear();
+        wordsArray = ideaDataBase.getAllElements(lastQuery);  //Dar el query para que busque otra vez
+        for(ArrayList<String> array : wordsArray){
+            palabraArray.add(array.get(0));
+        }
+        wordsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == ADD_GLOSARIO_REQUEST){
+            updateDataInListView();
+        }
+        else if(requestCode == EDIT_GLOSARIO_REQUEST){
+            updateDataInListView();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     public void onClickLetters(View view){
         int selected = Integer.valueOf(view.getTag().toString());
@@ -122,55 +163,33 @@ public class GlosarioActivity extends AppCompatActivity {
         selectedSection[selected].setTextColor(Color.WHITE);
         currentSelected = selected;
 
-        String query = "SELECT * FROM glosario WHERE (palabra BETWEEN";
+        lastQuery = "SELECT * FROM glosario WHERE (palabra BETWEEN";
 
         switch (view.getTag().toString()){
             case "0":
-                query += " 'A%'  AND 'E%') OR palabra LIKE 'E%'";
+                lastQuery += " 'A%'  AND 'E%') OR palabra LIKE 'E%'";
                 break;
             case "1":
-                query += " 'F%'  AND 'J%') OR palabra LIKE 'J%'";
+                lastQuery += " 'F%'  AND 'J%') OR palabra LIKE 'J%'";
                 break;
             case "2":
-                query += " 'K%'  AND 'O%') OR palabra LIKE 'O%'";
+                lastQuery += " 'K%'  AND 'O%') OR palabra LIKE 'O%'";
                 break;
             case "3":
-                query += " 'P%'  AND 'T%') OR palabra LIKE 'T%'";
+                lastQuery += " 'P%'  AND 'T%') OR palabra LIKE 'T%'";
                 break;
             case "4":
-                query += " 'U%'  AND 'Z%') OR palabra LIKE 'Z%'";
+                lastQuery += " 'U%'  AND 'Z%') OR palabra LIKE 'Z%'";
                 break;
         }
 
-        query += "ORDER BY palabra ASC";
+        lastQuery += "ORDER BY palabra ASC";
         wordsArray.clear();
-        wordsArray.addAll(getWords(query));
-//        adapterWordsList = getWords(query);     //Por que no se podra?
-        wordsAdapter.notifyDataSetChanged();
-    }
-
-    private ArrayList<String> getWords(String query){
-        SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
-        Cursor c = Database.rawQuery(query, null);
-        ArrayList<String> array = new ArrayList<>();
-
-        int palabraIndex = c.getColumnIndex("palabra");
-
-        c.moveToFirst();
-
-        while (!c.isAfterLast()) {
-            array.add(c.getString(palabraIndex));
-            c.moveToNext();
+        palabraArray.clear();
+        wordsArray = ideaDataBase.getAllElements(lastQuery);
+        for(ArrayList<String> array : wordsArray){
+            palabraArray.add(array.get(0));
         }
-
-        return array;
-    }
-
-    public void updateDataInListView(String letterRange){
-        wordsArray.clear();
-        //Dar el query para que busque otra vez
-        wordsArray = getWords("SELECT * FROM glosario WHERE (palabra BETWEEN 'A%'  AND 'E%') OR palabra LIKE 'E%' ORDER BY palabra ASC");
-
         wordsAdapter.notifyDataSetChanged();
     }
 }

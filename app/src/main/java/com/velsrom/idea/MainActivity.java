@@ -129,11 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
         dialog = new Dialog(this);
 
-        ArrayList<ArrayList<String>> busquedasOptions;
-
         SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         IdeaDataBase ideaDataBase = new IdeaDataBase(Database, "busquedas");
-        busquedasOptions = ideaDataBase.createQuery("SELECT * FROM busquedas");
+        ArrayList<ArrayList<String>> busquedasOptions = ideaDataBase.getAllElements("SELECT * FROM busquedas");
 
         int numero = (int) (Math.random() * busquedasOptions.size());
 

@@ -36,7 +36,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
 
     ArrayList<String> ideaTypes;
 
-    boolean isEdit;
+    boolean isEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +46,11 @@ public class CreateIdeaActivity extends AppCompatActivity {
         String type = getIntent().getStringExtra("IDEA_TYPE");
         String editRowName = getIntent().getStringExtra("EDIT_ROW_NAME");
         String editRowText = getIntent().getStringExtra("EDIT_ROW_TEXT");
-        isEdit = getIntent().getBooleanExtra("IS_EDIT", false);
+        int id = getIntent().getIntExtra("EDIT_ROW_ID", -1);
+//        isEdit = getIntent().getBooleanExtra("IS_EDIT", false);
 
-        if(type == null){
-            type = "";
-        }
+        if(type == null){ type = ""; }
+        if(id != -1){ isEdit = true; }
 
         titleEditText = findViewById(R.id.titleEditText);
         typeSpinner = findViewById(R.id.typeSpinner);
@@ -114,7 +114,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
         {
             try {
                 if(isEdit){
-                    ideasDataBase.editRow( titleEditText.getText().toString(), ideaEditText.getText().toString());
+                    ideasDataBase.editRow( titleEditText.getText().toString(), ideaEditText.getText().toString(), -1111111);
                 }else {
                     String[] dataForDatabase = {
                             titleEditText.getText().toString(),
