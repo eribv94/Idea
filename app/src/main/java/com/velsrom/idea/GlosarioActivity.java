@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -106,24 +108,38 @@ public class GlosarioActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int index = info.position;
+        final int idx = info.position;
         View view = info.targetView;
 
         switch (item.getItemId()) {
             case R.id.edit:
                 Intent editIntent = new Intent(getApplicationContext(), CreateGlosarioActivity.class);
-                editIntent.putExtra("ID", Integer.valueOf(wordsArray.get(index).get(2)));
-                editIntent.putExtra("WORD", wordsArray.get(index).get(0));
-                editIntent.putExtra("DEFINICION", wordsArray.get(index).get(1));
+                editIntent.putExtra("ID", Integer.valueOf(wordsArray.get(idx).get(2)));
+                editIntent.putExtra("WORD", wordsArray.get(idx).get(0));
+                editIntent.putExtra("DEFINICION", wordsArray.get(idx).get(1));
                 startActivityForResult(editIntent, EDIT_GLOSARIO_REQUEST);
                 return true;
             case R.id.delete:
                 try {
-                    ideaDataBase.deleteRow(palabraArray.get(index));
-                    palabraArray.remove(index);
-                    wordsAdapter.notifyDataSetChanged();
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Delete Word")
+                            .setMessage("Are you sure you want to delete?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ideaDataBase.deleteRow(palabraArray.get(idx));
+                                    palabraArray.remove(idx);
+                                    wordsAdapter.notifyDataSetChanged();
 
-                    Toast.makeText(getApplicationContext(), "Palabra eliminada", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Palabra eliminada", Toast.LENGTH_SHORT).show();
+                                }
+
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }

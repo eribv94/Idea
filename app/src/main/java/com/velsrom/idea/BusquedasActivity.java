@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -96,7 +98,7 @@ public class BusquedasActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int index = info.position;
+        final int index = info.position;
         View view = info.targetView;
 
         switch (item.getItemId()) {
@@ -109,12 +111,23 @@ public class BusquedasActivity extends AppCompatActivity {
                 return true;
             case R.id.delete:
                 try {
-                    ideaDataBase.deleteRow(busquedasOptions.get(index).get(0));
-                    busquedasOptions.remove(index);
-                    adapterListTitles.remove(index);
-                    busquedasAdapter.notifyDataSetChanged();
-
-                    Toast.makeText(getApplicationContext(), "Busqueda eliminada", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(this)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Delete Search")
+                            .setMessage("Are you sure you want to delete?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ideaDataBase.deleteRow(busquedasOptions.get(index).get(0));
+                                    busquedasOptions.remove(index);
+                                    adapterListTitles.remove(index);
+                                    busquedasAdapter.notifyDataSetChanged();
+                                    Toast.makeText(getApplicationContext(), "Busqueda eliminada", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
