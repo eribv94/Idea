@@ -21,14 +21,16 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.6.4/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/BusquedasActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/BusquedasActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/GlosarioActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/GlosarioActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/IdeaDataBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/IdeaDataBase.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/IdeasActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/IdeasActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/PalabraGlosarioActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/PalabraGlosarioActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateBusquedaActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateBusquedaActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateGlosarioActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateGlosarioActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateIdeaActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateIdeaActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_glosario.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_glosario.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateScreenshotActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateScreenshotActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_busquedas.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_busquedas.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_ideas.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_ideas.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -253,7 +255,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/velsrom/idea/creation/CreateGlosarioActivity.java</url>
-          <line>29</line>
+          <line>33</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>

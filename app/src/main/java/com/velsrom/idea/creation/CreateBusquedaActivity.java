@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,22 +42,32 @@ public class CreateBusquedaActivity extends AppCompatActivity {
 
     IdeaDataBase busquedaDataBase;
 
-    String path = "";
+    String path, busqueda, descripcion;
+    int id;
     boolean fromSC = false;
+    boolean isEdit = false;
 
     Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_create_busqueda);
 
         titleEditText = findViewById(R.id.titleEditText);
         imageTextView = findViewById(R.id.imageTextView);
         descripcionEditText = findViewById(R.id.descripcionEditText);
 
-        Intent getIntentFromSC = getIntent();
-        path = getIntentFromSC.getStringExtra("path");
+        path = getIntent().getStringExtra("path");
+        busqueda = getIntent().getStringExtra("BUSQUEDA");
+        descripcion = getIntent().getStringExtra("DESCRIPCION");
+        id = getIntent().getIntExtra("ID", -1);
+
+        if(id != -1){
+            isEdit = true;
+        }
 
         if(path != null && !path.isEmpty()){
             Log.i("Image loaded path: ", path);
@@ -138,30 +150,34 @@ public class CreateBusquedaActivity extends AppCompatActivity {
         if(!titleEditText.getText().toString().equals(""))
         {
             try {
-                if (fromSC) {
-                    File dir = new File(getFilesDir() + "/Screenshots/");
-                    if(!dir.isFile()){
-                        boolean mkdir = dir.mkdir();
-                        if(mkdir){
-                            Log.i("File creation", "Success: " + mkdir);
-                        }else{
-                            Log.i("File creation", "Already created: " + dir);
+                if(isEdit){
+                    busquedaDataBase.editRow( titleEditText.getText().toString(), descripcionEditText.getText().toString(), id);
+                }else {
+                    if (fromSC) {
+                        File dir = new File(getFilesDir() + "/Screenshots/");
+                        if (!dir.isFile()) {
+                            boolean mkdir = dir.mkdir();
+                            if (mkdir) {
+                                Log.i("File creation", "Success: " + mkdir);
+                            } else {
+                                Log.i("File creation", "Already created: " + dir);
+                            }
                         }
-                    }
-                    File file = new File(dir, System.currentTimeMillis() + ".jpg");
-                    try {
-                        outputStream = new FileOutputStream(file);
+                        File file = new File(dir, System.currentTimeMillis() + ".jpg");
+                        try {
+                            outputStream = new FileOutputStream(file);
 
-                    }catch (Exception e){
-                        e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                        path = file.getPath();
+                        Toast.makeText(getApplicationContext(), "Image Saved: " + path, Toast.LENGTH_SHORT).show();
                     }
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                    path = file.getPath();
-                    Toast.makeText(getApplicationContext(), "Image Saved: " + path, Toast.LENGTH_SHORT).show();
+                    String[] dataForDatabase = {titleEditText.getText().toString(), path, descripcionEditText.getText().toString()};
+                    busquedaDataBase.addData(dataForDatabase);
+                    Toast.makeText(getApplicationContext(), "Busqueda Saved", Toast.LENGTH_SHORT).show();
                 }
-                String[] dataForDatabase = {titleEditText.getText().toString(), path, descripcionEditText.getText().toString()};
-                busquedaDataBase.addData(dataForDatabase);
-                Toast.makeText(getApplicationContext(), "Busqueda Saved", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -32,6 +34,9 @@ public class CreateIdeaActivity extends AppCompatActivity {
     Spinner typeSpinner;
     EditText ideaEditText;
 
+    String type, editRowName, editRowText;
+    int id;
+
     IdeaDataBase ideasDataBase;
 
     ArrayList<String> ideaTypes;
@@ -41,12 +46,14 @@ public class CreateIdeaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_create_idea);
 
-        String type = getIntent().getStringExtra("IDEA_TYPE");
-        String editRowName = getIntent().getStringExtra("EDIT_ROW_NAME");
-        String editRowText = getIntent().getStringExtra("EDIT_ROW_TEXT");
-        int id = getIntent().getIntExtra("EDIT_ROW_ID", -1);
+        type = getIntent().getStringExtra("IDEA_TYPE");
+        editRowName = getIntent().getStringExtra("EDIT_ROW_NAME");
+        editRowText = getIntent().getStringExtra("EDIT_ROW_TEXT");
+        id = getIntent().getIntExtra("EDIT_ROW_ID", -1);
 //        isEdit = getIntent().getBooleanExtra("IS_EDIT", false);
 
         if(type == null){ type = ""; }
@@ -114,7 +121,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
         {
             try {
                 if(isEdit){
-                    ideasDataBase.editRow( titleEditText.getText().toString(), ideaEditText.getText().toString(), -1111111);
+                    ideasDataBase.editRow( titleEditText.getText().toString(), ideaEditText.getText().toString(), id);
                 }else {
                     String[] dataForDatabase = {
                             titleEditText.getText().toString(),

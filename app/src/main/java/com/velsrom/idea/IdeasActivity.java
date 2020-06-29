@@ -12,6 +12,8 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -50,6 +52,8 @@ public class IdeasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ideas);
 
         TextView ideaTypeTextView = findViewById(R.id.ideaTypeTextView);
@@ -148,6 +152,7 @@ public class IdeasActivity extends AppCompatActivity {
             case R.id.delete:
                 try {
                     ideaDataBase.deleteRow(ideasOptions.get(index).get(0));
+                    ideasOptions.remove(index);
                     adapterListTitles.remove(index);
                     ideasAdapter.notifyDataSetChanged();
                     Toast.makeText(getApplicationContext(), "Idea eliminada", Toast.LENGTH_SHORT).show();
