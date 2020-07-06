@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">Idea</string>
+
+    <!--    Create sections-->
+    <string name="create_idea">CREATE IDEA</string>
+    <string name="create_search">CREATE SEARCH</string>
+    <string name="create_word">CREATE WORD</string>
+
+    <!--    Name of types-->
+    <string name="glossary">Glossary</string>
+    <string name="search">Search and Learn</string>
+    <string name="idea">Ideas</string>
+    <string name="list_ideas">List of Ideas</string>
+    <string name="screenshot">Screenshot</string>
+    <string name="random">Random</string>
+
+    <!--    Ideas types-->
+    <string name="idea_idea">Ideas</string>
+    <string name="idea_activity">Activities</string>
+    <string name="idea_invention">Inventions</string>
+    <string name="idea_thought">Thoughts</string>
+    <string name="idea_phrase">Phrases</string>
+    <string name="idea_other">Other</string>
+
+    <!--    Buttons -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
 </resources>

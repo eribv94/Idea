@@ -35,12 +35,14 @@ public class CreateGlosarioActivity extends AppCompatActivity {
         definicion = getIntent().getStringExtra("DEFINICION");
         id = getIntent().getIntExtra("ID", -1);
 
-        if(id != -1){
-            isEdit = true;
-        }
-
         wordEditText = findViewById(R.id.wordEditText);
         descripcionEditText = findViewById(R.id.descripcionEditText);
+
+        if(id != -1){
+            isEdit = true;
+            wordEditText.setText(word);
+            descripcionEditText.setText(definicion);
+        }
 
         SQLiteDatabase database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
 
@@ -48,11 +50,6 @@ public class CreateGlosarioActivity extends AppCompatActivity {
         ArrayList<String> nameTypes= new ArrayList();
 
         glosarioDataBase = new IdeaDataBase(database, "glosario", columns, nameTypes);
-
-        if(isEdit){
-            wordEditText.setText(word);
-            descripcionEditText.setText(definicion);
-        }
     }
 
     public void saveWord(View view){
@@ -76,7 +73,7 @@ public class CreateGlosarioActivity extends AppCompatActivity {
             }
             finish();
         } else {
-            Toast.makeText(getApplicationContext(), "Llenar los datos correctamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Fill correctly", Toast.LENGTH_SHORT).show();
         }
     }
 

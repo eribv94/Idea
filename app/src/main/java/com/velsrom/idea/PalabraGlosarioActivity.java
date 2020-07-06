@@ -20,8 +20,8 @@ public class PalabraGlosarioActivity extends AppCompatActivity {
     TextView blackWordTextView;
     TextView greenWordTextView;
 
-    String word;
-    String definicion;
+    String word, definicion;
+    int id;
     public static final int EDIT_REQUEST_CODE = 1001;
 
     @Override
@@ -37,6 +37,7 @@ public class PalabraGlosarioActivity extends AppCompatActivity {
 
         word = getIntent().getStringExtra("WORD");
         definicion = getIntent().getStringExtra("DEFINICION");
+        id = getIntent().getIntExtra("ID", -1);
 
         definicionTextView.setText(definicion);
         blackWordTextView.setText(word);
@@ -47,6 +48,7 @@ public class PalabraGlosarioActivity extends AppCompatActivity {
         Intent editIntent = new Intent(getApplicationContext(), CreateGlosarioActivity.class);
         editIntent.putExtra("WORD", word);
         editIntent.putExtra("DEFINICION", definicion);
+        editIntent.putExtra("ID", id);
         startActivityForResult(editIntent, EDIT_REQUEST_CODE);
     }
 
@@ -59,18 +61,17 @@ public class PalabraGlosarioActivity extends AppCompatActivity {
     }
 
     public void refreshContent(){
-        definicion = buscaDefinicion();
-        definicionTextView.setText(definicion);
-    }
-
-    public String buscaDefinicion(){
         final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
-        Cursor c = Database.rawQuery("SELECT * FROM glosario WHERE palabra = \'" + word + "\' ", null);
+        Cursor c = Database.rawQuery("SELECT * FROM glosario WHERE id = \'" + id + "\' ", null);
 
+        int plabraIdx = c.getColumnIndex("palabra");
         int definicionIdx = c.getColumnIndex("definicion");
         c.moveToFirst();
-        String definicion = c.getString(definicionIdx);
+        word = c.getString(plabraIdx);
+        definicion = c.getString(definicionIdx);
 
-        return definicion;
+        definicionTextView.setText(definicion);
+        blackWordTextView.setText(word);
+        greenWordTextView.setText(word);
     }
 }

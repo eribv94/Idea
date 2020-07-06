@@ -67,14 +67,14 @@ public class CreateIdeaActivity extends AppCompatActivity {
         ideaTypes.add("Seleccione tipo...");
         ideaTypes.add("Ideas"); //Como retos y apuestas
         ideaTypes.add("Actividades");
-        ideaTypes.add("Invensiones");
+        ideaTypes.add("Invenciones");
         ideaTypes.add("Pensamientos");
         ideaTypes.add("Frases");
-        ideaTypes.add("Otro");
+        ideaTypes.add("Otros");
 
         SQLiteDatabase database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
 
-        String[] columns = {"title", "type", "idea"};
+        String[] columns = {"title", "type", "idea", "id"};
         ArrayList<String> nameTypes= new ArrayList();
 
         ideasDataBase = new IdeaDataBase(database, "ideas", columns, nameTypes);
@@ -89,7 +89,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
             case "Actividades": //Actividades
                 typeSpinner.setSelection(2);
                 break;
-            case "Invensiones": //Invensiones
+            case "Invenciones": //Invenciones
                 typeSpinner.setSelection(3);
                 break;
             case "Pensamientos": //Pensamientos
@@ -137,7 +137,7 @@ public class CreateIdeaActivity extends AppCompatActivity {
             finish();
         }
         else {
-            Toast.makeText(getApplicationContext(), "Llenar los datos correctamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Fill correctly", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.velsrom.idea.creation.CreateBusquedaActivity;
 import com.velsrom.idea.creation.CreateGlosarioActivity;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     * */
 
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
+    private static final int REQUEST_CODE_INTERNET_PERMISSION = 11;
 
     Dialog dialog;
 
@@ -71,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 "definicion VARCHAR, " +
                 "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT)");
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 // Show an explanation
@@ -81,6 +82,21 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         REQUEST_CODE_STORAGE_PERMISSION);
+            }
+        } else {
+            // Permission has already been granted
+
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.INTERNET)) {
+                // Show an explanation
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.INTERNET},
+                        REQUEST_CODE_INTERNET_PERMISSION);
             }
         } else {
             // Permission has already been granted
@@ -126,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
     //======================================= SECCION RANDOM  ======================================
 
     public void randomBusqueda(){
-
         dialog = new Dialog(this);
 
         SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
@@ -135,12 +150,26 @@ public class MainActivity extends AppCompatActivity {
 
         int numero = (int) (Math.random() * busquedasOptions.size());
 
-        openDialog(busquedasOptions.get(numero).get(0));
+        if(busquedasOptions.size() > 0) {
 
+
+            Intent showIdeaIntent = new Intent(getApplicationContext(), ShowIdeaActivity.class);
+            showIdeaIntent.putExtra("TITLE", busquedasOptions.get(numero).get(0));
+            showIdeaIntent.putExtra("TEXT", busquedasOptions.get(numero).get(2));
+            showIdeaIntent.putExtra("ID", Integer.valueOf(busquedasOptions.get(numero).get(3)));
+            showIdeaIntent.putExtra("TABLE_NAME", "Busquedas");
+            startActivity(showIdeaIntent);
+
+
+            //openDialog(busquedasOptions.get(numero).get(0));
+        }else{
+            Toast.makeText(this, "No elements in Search and learn", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void openDialog(String word){
         //SI TIENE IMAGEN, QUE LA MUESTRE TAMBIEN
+
         final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         Cursor c = Database.rawQuery("SELECT * FROM busquedas WHERE title = \'" + word + "\' ", null);
 
@@ -160,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ImageView image = new ImageView(context);
 
-        if(!path.equals("")){
+        if (!path.equals("")) {
             Bitmap myBitmap = BitmapFactory.decodeFile(path);
             image.setImageBitmap(myBitmap);
             layout.addView(image);
@@ -168,6 +197,5 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setContentView(layout);
         dialog.show();
-
     }
 }

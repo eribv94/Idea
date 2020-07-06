@@ -38,7 +38,7 @@ public class IdeaDataBase {
         database.execSQL(query.toString());
 
         ContentValues cv = new ContentValues();
-        for (int i = 0; i < columnNames.length - 1; i++) {
+        for (int i = 0; i < columnNames.length - 1; i++) { //-1 porque el ultimo es ID y se crea solo
             cv.put(columnNames[i], array[i]);
         }
         database.insert(tableName, null, cv);

@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/appicon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PalabraGlosarioActivity"></activity>
+        <activity android:name=".ShowIdeaActivity"></activity>
+        <activity android:name=".PalabraGlosarioActivity" />
         <activity android:name=".IdeasActivity" />
         <activity android:name=".BusquedasActivity" />
         <activity android:name=".GlosarioActivity" />
@@ -30,7 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

@@ -67,10 +67,12 @@ public class CreateBusquedaActivity extends AppCompatActivity {
 
         if(id != -1){
             isEdit = true;
+            titleEditText.setText(busqueda);
+            descripcionEditText.setText(descripcion);
         }
 
         if(path != null && !path.isEmpty()){
-            Log.i("Image loaded path: ", path);
+//            Log.i("Image loaded path: ", path);
             imageTextView.setText("Image Loaded");
             fromSC = true;
         }else {
@@ -79,7 +81,7 @@ public class CreateBusquedaActivity extends AppCompatActivity {
 
         SQLiteDatabase databse = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
 
-        String[] columns = {"title", "path", "descripcion"};
+        String[] columns = {"title", "path", "descripcion", "id"};
         ArrayList<String> nameTypes= new ArrayList();
 
         busquedaDataBase = new IdeaDataBase(databse, "busquedas", columns, nameTypes);
@@ -176,7 +178,7 @@ public class CreateBusquedaActivity extends AppCompatActivity {
                     }
                     String[] dataForDatabase = {titleEditText.getText().toString(), path, descripcionEditText.getText().toString()};
                     busquedaDataBase.addData(dataForDatabase);
-                    Toast.makeText(getApplicationContext(), "Busqueda Saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Search Saved", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -184,7 +186,7 @@ public class CreateBusquedaActivity extends AppCompatActivity {
             finish();
         }
         else {
-            Toast.makeText(getApplicationContext(), "Llenar los datos correctamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Fill correctly", Toast.LENGTH_SHORT).show();
         }
     }
 

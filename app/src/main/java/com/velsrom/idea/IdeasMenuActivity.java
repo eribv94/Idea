@@ -35,7 +35,7 @@ public class IdeasMenuActivity extends AppCompatActivity {
                 ideaType = "Actividades";
                 break;
             case 2:
-                ideaType = "Invensiones";
+                ideaType = "Invenciones";
                 break;
             case 3:
                 ideaType = "Pensamientos";

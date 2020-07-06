@@ -38,6 +38,7 @@ public class BusquedasActivity extends AppCompatActivity {
 
     public static final int EDIT_BUSQUEDA_REQUEST = 1001;
     public static final int ADD_BUSQUEDA_REQUEST = 1002;
+    public static final int SHOW_BUSQUEDA_REQUEST = 1003;
 
     ListView busquedasListView;
 
@@ -63,7 +64,7 @@ public class BusquedasActivity extends AppCompatActivity {
         busquedasOptions = new ArrayList<>();
 
         final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
-        String[] columns = {"title", "path", "descripcion"};
+        String[] columns = {"title", "path", "descripcion", "id"};
         ArrayList<String> nameTypes= new ArrayList();
         ideaDataBase = new IdeaDataBase(Database, "busquedas", columns, nameTypes);
         busquedasOptions = ideaDataBase.getAllElements("SELECT * FROM busquedas");
@@ -78,10 +79,13 @@ public class BusquedasActivity extends AppCompatActivity {
         busquedasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), busquedasOptions.get(position).get(0), Toast.LENGTH_SHORT).show();
-
-                openDialog(busquedasOptions.get(position).get(0));
-                //SELECCIONAR IDEA
+                Intent showIdeaIntent = new Intent(getApplicationContext(), ShowIdeaActivity.class);
+                showIdeaIntent.putExtra("TITLE", busquedasOptions.get(position).get(0));
+                showIdeaIntent.putExtra("TEXT", busquedasOptions.get(position).get(2));
+                showIdeaIntent.putExtra("IMAGE_PATH", busquedasOptions.get(position).get(1));
+                showIdeaIntent.putExtra("ID", Integer.valueOf(busquedasOptions.get(position).get(3)));
+                showIdeaIntent.putExtra("TABLE_NAME", "Busquedas");
+                startActivityForResult(showIdeaIntent, SHOW_BUSQUEDA_REQUEST);
             }
         });
 
@@ -106,7 +110,7 @@ public class BusquedasActivity extends AppCompatActivity {
                 Intent editIntent = new Intent(getApplicationContext(), CreateBusquedaActivity.class);
                 editIntent.putExtra("ID", Integer.valueOf(busquedasOptions.get(index).get(3)));
                 editIntent.putExtra("BUSQUEDA", busquedasOptions.get(index).get(0));
-                editIntent.putExtra("DESCRIPCION", busquedasOptions.get(index).get(1));
+                editIntent.putExtra("DESCRIPCION", busquedasOptions.get(index).get(2));
                 startActivityForResult(editIntent, EDIT_BUSQUEDA_REQUEST);
                 return true;
             case R.id.delete:
@@ -143,6 +147,9 @@ public class BusquedasActivity extends AppCompatActivity {
             updateDataInListView();
         }
         else if(requestCode == EDIT_BUSQUEDA_REQUEST){
+            updateDataInListView();
+        }
+        else if(requestCode == SHOW_BUSQUEDA_REQUEST){
             updateDataInListView();
         }
         super.onActivityResult(requestCode, resultCode, data);

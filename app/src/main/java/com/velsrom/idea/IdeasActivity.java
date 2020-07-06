@@ -49,6 +49,7 @@ public class IdeasActivity extends AppCompatActivity {
 
     private static final int CREATE_IDEA_IN_IDEA_REQUEST = 1001;
     private static final int EDIT_IDEA_REQUEST = 1002;
+    private static final int SHOW_IDEA_REQUEST = 1003;
     public static final String DATABASE_NAME = "Idea";
 
     @Override
@@ -77,8 +78,8 @@ public class IdeasActivity extends AppCompatActivity {
             case "Actividades": //Actividades
                 query = "SELECT * FROM ideas WHERE type = \"Actividades\"";
                 break;
-            case "Invensiones": //Invensiones
-                query = "SELECT * FROM ideas WHERE type = \"Invensiones\"";
+            case "Invenciones": //Invensiones
+                query = "SELECT * FROM ideas WHERE type = \"Invenciones\"";
                 break;
             case "Pensamientos": //Pensamientos
                 query = "SELECT * FROM ideas WHERE type = \"Pensamientos\"";
@@ -101,9 +102,12 @@ public class IdeasActivity extends AppCompatActivity {
         ideasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), ideasOptions.get(position).get(0), Toast.LENGTH_SHORT).show();
-
-                //SELECCIONAR IDEA, MOSTRAR SU INFO
+                Intent showIdeaIntent = new Intent(getApplicationContext(), ShowIdeaActivity.class);
+                showIdeaIntent.putExtra("TITLE", ideasOptions.get(position).get(0));
+                showIdeaIntent.putExtra("TEXT", ideasOptions.get(position).get(2));
+                showIdeaIntent.putExtra("ID", Integer.valueOf(ideasOptions.get(position).get(3)));
+                showIdeaIntent.putExtra("TABLE_NAME", "Ideas");
+                startActivityForResult(showIdeaIntent, SHOW_IDEA_REQUEST);
             }
         });
     }
@@ -117,7 +121,6 @@ public class IdeasActivity extends AppCompatActivity {
             for(ArrayList<String> array : ideasOptions){
                 adapterListTitles.add(array.get(0));
             }
-
             ideasAdapter.notifyDataSetChanged();
         }
         else {
@@ -191,6 +194,9 @@ public class IdeasActivity extends AppCompatActivity {
             updateDataInListView();
         }
         else if(requestCode == EDIT_IDEA_REQUEST){
+            updateDataInListView();
+        }
+        else if(requestCode == SHOW_IDEA_REQUEST){
             updateDataInListView();
         }
         super.onActivityResult(requestCode, resultCode, data);

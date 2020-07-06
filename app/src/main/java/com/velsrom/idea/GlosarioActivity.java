@@ -71,7 +71,7 @@ public class GlosarioActivity extends AppCompatActivity {
         };
 
         final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
-        String[] columns = {"palabra", "definicion"};
+        String[] columns = {"palabra", "definicion", "id"};
         ArrayList<String> nameTypes= new ArrayList();
         ideaDataBase = new IdeaDataBase(Database, "glosario", columns, nameTypes);
 
@@ -91,6 +91,7 @@ public class GlosarioActivity extends AppCompatActivity {
                 Intent definicionIntent = new Intent(getApplicationContext(), PalabraGlosarioActivity.class);
                 definicionIntent.putExtra("WORD", palabraArray.get(position));
                 definicionIntent.putExtra("DEFINICION", wordsArray.get(position).get(1));
+                definicionIntent.putExtra("ID", Integer.valueOf(wordsArray.get(position).get(2)));
                 startActivity(definicionIntent);
             }
         });
@@ -211,5 +212,11 @@ public class GlosarioActivity extends AppCompatActivity {
             palabraArray.add(array.get(0));
         }
         wordsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateDataInListView();
     }
 }

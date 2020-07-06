@@ -12,8 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:fontFamily="@font/nunito_light"
-        android:text="IDEA"
+        android:fontFamily="@font/nunito_bold"
+        android:text="@string/app_name"
         android:textColor="#000000"
         android:textSize="36sp"
         android:textStyle="bold"
@@ -53,7 +53,7 @@
                 android:onClick="onClickSection"
                 android:paddingLeft="20dp"
                 android:tag="0"
-                android:text="Ideas"
+                android:text="@string/idea"
                 android:textAlignment="textStart" />
 
             <Button
@@ -87,7 +87,7 @@
                 android:onClick="onClickSection"
                 android:paddingLeft="20dp"
                 android:tag="1"
-                android:text="Buscar/Aprender"
+                android:text="@string/search"
                 android:textAlignment="textStart" />
 
             <Button
@@ -121,7 +121,7 @@
                 android:onClick="onClickSection"
                 android:paddingLeft="20dp"
                 android:tag="2"
-                android:text="Glosario"
+                android:text="@string/glossary"
                 android:textAlignment="textStart" />
 
             <Button
@@ -148,10 +148,11 @@
             android:background="#F64425"
             android:fontFamily="@font/nunito_bold"
             android:onClick="onClickSection"
-            android:textAlignment="textStart"
             android:paddingLeft="20dp"
+            android:shadowColor="#E10F0F"
             android:tag="3"
-            android:text="Screenshot" />
+            android:text="@string/screenshot"
+            android:textAlignment="textStart" />
 
         <Button
             android:id="@+id/aleatorioButton"
@@ -162,10 +163,10 @@
             android:background="#B4E465FA"
             android:fontFamily="@font/nunito_bold"
             android:onClick="onClickSection"
-            android:textAlignment="textStart"
             android:paddingLeft="20dp"
             android:tag="4"
-            android:text="Aleatorio" />
+            android:text="@string/random"
+            android:textAlignment="textStart" />
 
     </LinearLayout>
 
