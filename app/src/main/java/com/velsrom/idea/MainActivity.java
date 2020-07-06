@@ -31,16 +31,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    /*
-    * TODO:
-    *  - Sig version: poder ordenar de diferentes maneras las ideas/busquedas (fecha, titulo asc-desc, etc.)
-    *  -
-    * */
-
     private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_INTERNET_PERMISSION = 11;
-
-    Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
     //======================================= SECCION RANDOM  ======================================
 
     public void randomBusqueda(){
-        dialog = new Dialog(this);
-
         SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
         IdeaDataBase ideaDataBase = new IdeaDataBase(Database, "busquedas");
         ArrayList<ArrayList<String>> busquedasOptions = ideaDataBase.getAllElements("SELECT * FROM busquedas");
@@ -151,51 +141,15 @@ public class MainActivity extends AppCompatActivity {
         int numero = (int) (Math.random() * busquedasOptions.size());
 
         if(busquedasOptions.size() > 0) {
-
-
             Intent showIdeaIntent = new Intent(getApplicationContext(), ShowIdeaActivity.class);
             showIdeaIntent.putExtra("TITLE", busquedasOptions.get(numero).get(0));
+            showIdeaIntent.putExtra("IMAGE_PATH", busquedasOptions.get(numero).get(1));
             showIdeaIntent.putExtra("TEXT", busquedasOptions.get(numero).get(2));
             showIdeaIntent.putExtra("ID", Integer.valueOf(busquedasOptions.get(numero).get(3)));
             showIdeaIntent.putExtra("TABLE_NAME", "Busquedas");
             startActivity(showIdeaIntent);
-
-
-            //openDialog(busquedasOptions.get(numero).get(0));
         }else{
             Toast.makeText(this, "No elements in Search and learn", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void openDialog(String word){
-        //SI TIENE IMAGEN, QUE LA MUESTRE TAMBIEN
-
-        final SQLiteDatabase Database = this.openOrCreateDatabase("Idea", MODE_PRIVATE, null);
-        Cursor c = Database.rawQuery("SELECT * FROM busquedas WHERE title = \'" + word + "\' ", null);
-
-        int descripcionIdx = c.getColumnIndex("descripcion");
-        int pathIdx = c.getColumnIndex("path");
-        c.moveToFirst();
-        String descripcion = c.getString(descripcionIdx);
-        String path = c.getString(pathIdx);
-
-        Context context = this; //???
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        final TextView titleBox = new TextView(context);
-        titleBox.setText(descripcion);
-        layout.addView(titleBox);
-
-        final ImageView image = new ImageView(context);
-
-        if (!path.equals("")) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(path);
-            image.setImageBitmap(myBitmap);
-            layout.addView(image);
-        }
-
-        dialog.setContentView(layout);
-        dialog.show();
     }
 }
