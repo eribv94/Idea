@@ -111,11 +111,13 @@ public class CreateScreenshotActivity extends AppCompatActivity {
     public void saveScreen(View view){
         Bitmap bitmap;
         if(isImageView){
+            //imageview
             imageView.setDrawingCacheEnabled(true);
             imageView.buildDrawingCache(true);
             bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
             imageView.setDrawingCacheEnabled(false);
         }else {
+            //webview
             webView.setDrawingCacheEnabled(true);
             webView.buildDrawingCache(true);
             bitmap = Bitmap.createBitmap(webView.getDrawingCache());
